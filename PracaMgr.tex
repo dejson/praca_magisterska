@@ -1,0 +1,74 @@
+\documentclass[10pt,a4paper,twoside]{report}
+\usepackage[a4paper,inner=3.5cm,outer=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\linespread{1.3} %interlinia 1.5
+\setlength{\parindent}{1.25cm}
+\usepackage{indentfirst}
+
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{pdfpages}
+
+\usepackage[titletoc,title]{appendix}
+\usepackage{titlesec}
+\usepackage{uarial}
+\renewcommand*{\familydefault}{\sfdefault}
+
+%*************
+\usepackage{newtxtext, newtxmath} %lepiej wyglądające nagłówki
+\usepackage{epstopdf} %do dołączania obrazków w formacie eps
+\usepackage{hyperref} % hiperłącza wewnętrzne (cytowania, odnośniki do obrazków, równań)
+\usepackage{xcolor,listings} %listingi 
+\usepackage[font=small,labelfont=bf]{caption} %ustawienie czcionki 9pt na podpisach
+\captionsetup[table]{justification=justified,singlelinecheck=false, format=hang} %ustawienie podpisów tabel 
+\usepackage{enumitem} %to, czego brakowało przy symbolach
+\usepackage{algorithm}
+%*************
+
+\titleformat{\chapter}[hang]
+{\normalfont\fontsize{12}{15}\bfseries\uppercase}{\thechapter.}{1em}{}
+\titlespacing*{\chapter}{0pt}{12pt}{6pt}
+
+\titleformat{\section}[hang]
+{\normalfont\fontsize{10}{12}\bfseries\itshape}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+
+\titleformat{\subsection}[hang]
+{\normalfont\fontsize{10}{12}\itshape}{\thesubsection.}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+\begin{document}
+
+\include{Abstrakt_pl}
+\include{Abstrakt_en}
+
+\tableofcontents
+\addcontentsline{toc}{chapter}{Spis treści}
+
+\include{Symbole}
+\include{Oznaczenia}
+
+\include{Rozdzial1}
+\include{Rozdzial2}
+
+\listoffigures
+\addcontentsline{toc}{chapter}{Spis rysunków}
+\listoftables
+\addcontentsline{toc}{chapter}{Spis tabel}
+
+
+\bibliographystyle{unsrt}
+\bibliography{bibliografia}
+
+%\begin{thebibliography}{20}
+%\bibitem{Doktorat} K. Gunawickrama \textit{Leak detection methods}, Praca doktorska, Gdańsk, 2001.
+%\end{thebibliography}
+
+%*****************
+\begin{appendices}
+\include{AppA}
+\include{AppB}
+\end{appendices}
+%*****************
+
+\end{document}
