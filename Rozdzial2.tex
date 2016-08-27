@@ -1,7 +1,5 @@
 \chapter{Algorytmy przetwarzania chmur punktów w systemach GIS}
 
-lorem ipsum ....
-
 \section{Pozyskiwanie danych}
 Do pozyskiwania danych wykorzystuje się technologię LIDAR. Jest to nowoczesna metoda pozyskiwania informacji dotyczących wysokości terenu \cite{Marmol2003}. Efektem jej działania jest tzw “chmura punktów”, która uwzględnia wysokość nie tylko powierzchni ziemi, ale również drzew, budynków itp.
 
@@ -33,7 +31,18 @@ Triangulacja Delaunay'a jest reprezentacją chmury punktów w postaci nieregular
     \Else
         \State dodaj krawędzie, aby nie zniszczyć triangulacji
     \EndIf
+    \EndFor
 \end{algorithmic}
+
+Przykładowe kolejne etapy tak przeprowadzonej triangulacji pokazano na rysunku \ref{fig:iter_triangulacja}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{img/iter_traingulacja.jpg}
+    \caption{Iteracyjna triangulacja}
+    \label{fig:iter_triangulacja}
+\end{figure}
+
 
 
 \subsection{Metoda2}
