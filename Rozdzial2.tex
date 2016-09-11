@@ -22,7 +22,20 @@ W poniższym rozdziale zostaną opisane istniejące algorytmy przetwarzania dany
 
 \subsection{Triangulacja Delaunay'a}
 
-Triangulacja Delaunay'a jest reprezentacją chmury punktów w postaci nieregularnej siatki trójkątów TIN (z ang. Triangulated Irregular Network). Jej cechą szczególną jest fakt, iż każdy z punktów znajduje się w wierzchołku przynajmniej jednego trójkąta \cite{Lee1980}. Triangulacja Delaunay'a jest często wykorzystywana przy przetwarzaniu danych LIDAR. Dzięki stosowaniu filtracji może służyć do oddzielania poszczególnych zbiorów punktów od siebie \cite{koziol2007} bądź też do znajdywania łamanej otaczającej zadany zbiór punktów \cite{website:HumanGeoBlog}. Istnieje wiele implementacji algorytmu pozwalającego na przetworzenie chmury punktów do postaci siatki trójkątów \cite{Lee1980,Dwyer1987,jiang2010}. W artykule \cite{Lee1980} opisano dwa algorytmy tworzenia takiej siatki - dziel i zwyciężaj oraz tribuild. Pierwszy z nich o złożoności obliczeniowej $O(N log N)$ rekurencyjnie dzieli zbiór punktów pośrednich na mniejsze zbiory, w nich dokonuje triangulacji a następnie łączy je. Drugi z nich o złożoności obliczeniowej $O(N^{3/2})$ zakłada znajomość prostokąta który otacza zadany zbiór punktów. Prostokąt ten jest dzielony na mniejsze, a następnie dla każdego mniejszego prostokąta:
+\subsubsection{Definicja}
+Triangulacja Delaunay'a jest reprezentacją chmury punktów w postaci nieregularnej siatki trójkątów TIN (z ang. Triangulated Irregular Network).
+Jej cechą szczególną jest fakt, iż żaden z punktów nie leży wewnątrz okręgu opisanego na dowolnym trójkącie \cite{Lee1980}. Podział ten ma tę własność, że maksymalizuje najmniejszy kąt spośród 
+wszystkich trójkątów należących do triangulacji. Na rysunku \ref{fig:triangulacja} przedstawiono przykładową triangulacje.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/triangulacja.jpg}
+    \caption{Triangulacja Delaunay z zaznaczonymi okręgami opisanymi na trójkątach}
+    \label{fig:triangulacja}
+\end{figure}
+
+\subsubsection{Aplikacje}
+Triangulacja Delaunay'a jest często wykorzystywana przy przetwarzaniu danych LIDAR. Dzięki stosowaniu filtracji może służyć do oddzielania poszczególnych zbiorów punktów od siebie \cite{koziol2007} bądź też do znajdywania łamanej otaczającej zadany zbiór punktów \cite{website:HumanGeoBlog}. Istnieje wiele implementacji algorytmu pozwalającego na przetworzenie chmury punktów do postaci siatki trójkątów \cite{Lee1980,Dwyer1987,jiang2010}. W artykule \cite{Lee1980} opisano dwa algorytmy tworzenia takiej siatki - dziel i zwyciężaj oraz tribuild. Pierwszy z nich o złożoności obliczeniowej $O(N log N)$ rekurencyjnie dzieli zbiór punktów pośrednich na mniejsze zbiory, w nich dokonuje triangulacji a następnie łączy je. Drugi z nich o złożoności obliczeniowej $O(N^{3/2})$ zakłada znajomość prostokąta który otacza zadany zbiór punktów. Prostokąt ten jest dzielony na mniejsze, a następnie dla każdego mniejszego prostokąta:
 
 \begin{algorithmic}
     \For {punkt P w punktach należących do prostokąta}
@@ -43,9 +56,73 @@ Przykładowe kolejne etapy tak przeprowadzonej triangulacji pokazano na rysunku 
     \label{fig:iter_triangulacja}
 \end{figure}
 
+W 1987 Dwayer zaproponował szybszy algorytm dziel i zwyciężaj, o zakładanej złożoności $O(N log log N)$, jednak w pesymistycznym przypadku dalej będzie to $O(N log N)$  \cite{Dwyer1987}. Powstały też nowsze algorytmy pozwalające na stworzenie triangulacji. W artykule \textsl{An efficient algorithm for constructing Delaunay triangulation} autorzy zwracają uwagę, że w większości algorytmów szybko tworzy się siatkę a następnie dużo czasu poświęca się na lokalne optymalizacje, co skutkuje zwiększoną złożonością obliczeniową. Dzięki zaproponowaniu reguły prawej dłoni, udało im się znacząco zmniejszyć ilość obliczeń potrzebnych do przeprowadzenia lokalnych optymalizacji, tym samym proponowany algorytm ma złożoność na poziomie $O(N)$ \cite{jiang2010}.
 
+\subsection{Maszyny wektorów nośnych}
 
-\subsection{Metoda2}
+\subsubsection{Definicja} 
+
+Maszyny wektorów nośnych SVN (z ang. \textit{support vector machine}) pozwalają na rozwiązanie tzw. problemu klasyfikacji. Definicja problemu brzmi następująco: dla pewnej przestrzeni $\Omega$ zawierającej wektory danych x, należące do dwóch klas
+$\Omega = \{(x_{i}, c_{i}) | x_{i} \in R^p, c_{i} \in \{-1,1\}\}$
+należy znaleźć klasyfikator który podzieli tę przestrzeń na dwa rozłączne obszary jak najlepiej odpowiadające klasom $\{-1, 1\}$ \cite{stefanowski2010}. Do rozdzielenia zbioru na dwa służy tzw. liniowa funkcja separująca (lub jej uogólnienie - hiperpłaszczyzna dla przypadków n-wymiarowych), która wyznacza podział przestrzeni na dwa podobszary.
+
+\begin{figure}[h!]
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\linewidth]{img/granica_1.jpg}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\linewidth]{img/granica_2.jpg}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\linewidth]{img/granica_3.jpg}
+    \end{subfigure}
+    \caption{Różne przykłady liniowej separacji}
+    \label{fig:liniowa_separacja}
+\end{figure}
+
+Na rysunku \ref{fig:liniowa_separacja} przedstawiono różne poprawne sposoby separowania tego samego zbioru. Można w szczególności wyróżnić pary hiperpłaszczyzn $b_{i1}$ oraz $b_{i2}$, będących równoległych do 
+siebie, powstałych poprzez przesuwanie jednej hiperpłaszczyzny od punktu granicznego pierwszego zbioru do punktu granicznego drugiego zbioru (rysunek \ref{fig:rownolegla_separacja}).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.33\textwidth]{img/granica_rownolegla.jpg}
+    \caption{Równoległe hiperpłaszczyzny}
+    \label{fig:rownolegla_separacja}
+\end{figure}
+
+Odległości pomiędzy hiperpłaszczyznami $b_{i1}$ oraz $b_{i2}$ nazywamy marginesem klasyfikatora liniowego. Maszyny wektorów nośnych znajdują taką hiperpłaszczyznę, która maksymalizuje margines. Szukamy więc hiperpłaszczyzny spełniającej warunki:
+
+\begin{equation}
+    w*x + b =0
+\end{equation}
+
+gdzie $w$ i $b$ są parametrami modelu. Wtedy przynależność do klas można wyrazić jako:
+
+\begin{displaymath}
+    y = \left\{ \begin{array}{ll}
+        1 & \textrm{$w*x+b>0$}\\
+        -1 & \textrm{$w*x+b<0$}\\
+    \end{array} \right.
+\end{displaymath}
+
+Parametry $w$ i $b$ należy wyznaczać tak, aby maksymalne marginesy $b_{i1}$ i $b_{i2}$ były miejscem geometrycznym punktów $x$ spełniających warunki:
+\begin{eqnarray}
+    b_{i1} \quad w*x + b =1 \\
+    b_{i2} \quad w*x + b =-1
+\end{eqnarray}
+
+\subsubsection{Aplikacje}
+
+Możliowości wykorzystania maszyn wektorów nośnych do przetwarzania chmury punktów nasuwają się same - możliwe jest chociażby przydzielanie punktów do klas drzew i budynków \cite{xwang2011}. Istnieje wiele 
+różnych przykładów na wykorzystanie SVN do przetwarzania chmur punktów \cite{xwang2011,li2013,david2015}. We wszystkich z nich część punktów pomiarowych jest wykorzystywana jako dane uczące.
+Dla tych punktów operator ręcznie przydziela je do jednej z klas \cite{xwang2011}. Następnie na podstawie tych punktów możliwe jest określenie najlepszej hiperpłaszczyzny, jak opisano w sekcji \textit{definicja}.
+W pracy z 2011r. wykorzystano tzw. niezbalansowane maszyny wektorów nośnych USVN (z ang. \textit{unbalanced support vector machines}) do rozróżnienia drzew i budynków \cite{xwang2011}.
+Do analiz wykorzystano zdjęcia satelitarne oraz dane pochodzące z LIDARa - za pomocą tych dwóch źródeł stworzono wektory $x$ składające się z wysokości $Z$, wariancji wysokości $sZ$, różnice wysokości $hZ$,
+pochodne 3-go rzędu wzdłuż osi X i Y - odpowiedno $dX$ i $dY$ - oraz wartość koloru RGB ze zdjęcia satelitarnego. 
+W pracy \textit{Land classification from LiDAR full-waveforms based on multi-class support vector machines} wykorzystano SVM do przypisywania punktów do więcej niż dwóch klas \cite{li2013}. 
+W innej pracy z 2015 równierz wykorzystano SVM do podziału zbioru na więcej niż dwie klasy \cite{david2015}. Analiza to posłużyła do zmierzenia powierzchni namorzyn na Filipinach. 
+W tym przypadku do stworzenia wektorów $x$ wykorzystano numeryczny model powierzchmi DSM, numeryczny model terenu DTM, model wysokościowy CHM, średnią intensywność oraz ilość odbić. Co ciekawe, na podstawie
+ilości odbić można określić gatunek drzewa \cite{Sasaki2012}.
 
 \subsection{Metoda3}
 
