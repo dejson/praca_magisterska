@@ -124,6 +124,17 @@ W innej pracy z 2015 równierz wykorzystano SVM do podziału zbioru na więcej n
 W tym przypadku do stworzenia wektorów $x$ wykorzystano numeryczny model powierzchmi DSM, numeryczny model terenu DTM, model wysokościowy CHM, średnią intensywność oraz ilość odbić. Co ciekawe, na podstawie
 ilości odbić można określić gatunek drzewa \cite{Sasaki2012}.
 
-\subsection{Metoda3}
+\subsection{Analiza obrazu oparta obiektowo}
+
+\subsubsection{Definicja}
+
+Analiza obrazu oparta obiektowo OBIA (z ang. \textit{Object – based image analysis}) jest stosunkowo nową metodą \cite{burnett2003} służącą do przetwarzania obrazów. W przeciwieństwie do tradycyjnych metod przetwarzania, 
+nie analizuje pojedynczych pikseli, lecz całe ich grupy, zwane obiektami. Ma to przypominać sposób, w jaki ludzie rozróżniają obiekty na zdjęciach. Jeżeli zdjęcia dotczą powierzchni ziemi (takie jak zdjęcia 
+satelitarne) wyróżnia się wtedy metodę geograficznej analizy obrazu oparte obiektowo GEOBIA (z ang. \textit{Geographic Object-based Image Analysis}). Jako że tematyka całej pracy dotyczy systemów GIS,
+w dalszej części będzie opisywana ten szczególny przypadek OBIA.
+
+Metoda ta składa się z dwóch etapów. w Pierwszym z nich grupuje się podobne piksele (np. pod względem koloru) w obiekty prymitwne (prymitywy). Prymitywy służą następnie do konstruowania bardziej złożonych 
+struktur, odpowiadających rzeczywistym obiektom takim jak jeziora czy drogi \cite{Blaschke2014}.  Budowanie obiektów może odbywać się stopniowo na poziome wielu wartstw, jak przedstawiono na rysunku
+\ref{fig:poziomy_struktur}.
 
 \section{Klasyfikacja danych}
