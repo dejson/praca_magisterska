@@ -144,6 +144,42 @@ struktur, odpowiadających rzeczywistym obiektom takim jak jeziora czy drogi \ci
     \label{fig:poziomy_struktury}
 \end{figure}
 
-\subsubsetion{Aplikacje}
+\subsubsection{Aplikacje}
+Metoda ta jest szeroko używana do analizy danych pochodzących ze skanowania laserowego. Jest wykorzystywana do klasyfikowania terenów miejskich \cite{zhou2013,chen2014},
+wykrywania zmian powierzchni lasu \cite{zhang2014} oraz do wspomagania zarządzania terminalem kontenerowym \cite{tiede2015}. W tym ostatnim wykorzystano technikę OBIA do dokładnego określania miejsca położenia
+kontenerów. Jest to zadanie o tyle łatwiejsze, iż wielkość kontenerów jest znana i podana jako norma ISO 668. Do celów analizy stworzono model DTM na podstawie danych LIDAR. Następnie do wykrywania
+umiejscowie kontenerów wykorzystano dane LIDAR (pochodzące z jednego nalotu) oraz wykonywane częściej zdjęcia. Efektem jest model 3D nabrzeża.
+
+Na polu analizy i klasyfikacji terenów miejskich metoda OBIA również odnosi sukcesy. Jednym z przykładów jest praca opisana w artkule z 2014 roku \cite{chen2014} w której autorzy za pomocą jedynie
+danych LIDAR uzyskali dokładność klasfikacji punktów na poziomie  96.3\%. Wykorzystano w tym celu cztery informacje pochodzące ze skanowania - wysokość punktów nad poziomem gruntu, intensywność (czasem
+nazywana amplitudą) oraz różnicę wysokości i intensywności pierwszego i ostatniego impulsu. Następnie podzielono obraz na prymitywy, jak opisano w sekcji Definicja. Na końcu nastąpiło przypisanie poszczególnych
+obiektów do różnych klas na podstawie opisanych powyżej czterech atrybutów, jak przedstawia tabelka \ref{tab:przypisanie_do_klas}.
+
+\begin{table}[h!]
+    \centering
+    \caption{Klasyfikacja terenów na podstawie cech}
+    \label{tab:przypisanie_do_klas}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Klasa & Wysokość & Intensywność & Różnica wysokości i intensywności\\
+        \hline
+        Trawniki & Niska & Wysoka & Bardzko niska\\
+        \hline
+        Trawa i roślinność & Niska & Średnia & Bardzo niska\\
+        \hline
+        Drogi i ziemia & Niska & Niska & Bardzo niska\\
+        \hline
+        Woda & Niska & Bliska 0 & Bardzo niska\\
+        \hline
+        Krzewy & Średnia & Średnia & Niska\\
+        \hline
+        Infrastruktura Publiczna & Średnia & Wysoka & Średnia\\
+        \hline
+        Drzewa & Duża & Wysoka & Duża\\
+        \hline
+        Budynki & Duża & Wysoka & Średnia\\
+        \hline
+    \end{tabular}
+\end{table}
 
 \section{Klasyfikacja danych}
