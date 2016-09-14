@@ -219,6 +219,13 @@ Wtedy można wykazać że:
 gdzie $Var$ i $Cov$ to odpowiednio wariancja i kowariancja. Główne składowe to te \textit{nieskorelowane} kombinacje liniowe $Y_{1}, Y_{2}, \cdots, Y_{p}$ których variancje w \ref{eq:wariancja} są
 największe.
 
+\subsubsection{Aplikacje}
+W przypadku analizy chmury punktów PCA wykorzystywana jest do wyznaczania własciwości lokalnej geometrii \cite{natale2010} czy do określania gatunków drzew \cite{lee2016}.
+W tym pierwszym przypadku analizowano dane LIDAR pochodzące ze skanowania naziemnego w celu usunięcia szumów oraz wykrycia powierzchni brył (takich jak domy).
+PCA było tylko częścią analizy, pomagającą określić czy zadany punkt jest pojedynczym punktem (traktowanym jako błąd, ergo przeznaczonym do usunięcia), fragmentem lini (tym samym najprawdopodobniej krawędzi)
+czy też fragmentem powierzchni.
+W drugiej z cytowanych prac autorzy postawili sobie za cel określenie jakiego gatunku są pojedyncze zdjęcia na podstawie zdjęć lotniczych i danych LIDAR.
+Ze względu na mnogość danych, zdecydowali się na wykorzystanie PCA aby zmniejszyć ilość zmiennych a tym samym - przyspieszyć obliczenia.
 
 \subsection{Ukryte Modele Markowa}
 
