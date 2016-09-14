@@ -192,6 +192,34 @@ obiektów do różnych klas na podstawie opisanych powyżej czterech atrybutów,
 
 \subsection{Analiza Głównych Składowych}
 
+\subsubsection{Definicja}
+Analiza głównych składowych PCA (z ang. \textit{Principal components analysis}) to metoda statystyczna służąca do analiz wielowymiarowych, polegająca na tworzeniu nowych zmiennych nazywanych głównymi składowymi.
+Są one tworzone w taki sposób, aby kilka pierwszych z nich tłumaczyło w dużym stopniu zmienność modelu (miały jak największą wariancję). Algebraicznie, główne składowe są szczególnymi kombinacjami liniowymi $p$
+zmiennych losowych $X_{1}, X_{2}, \cdots, X_{p}$. Geometrycznie jest to ortogonalna zamiana oryginalnego układu współrzędnych na nowy. Osie nowego układu reprezentują kierunki z maksymalną wariancją oraz
+oferują prostszy opis zmiennych \cite{johnson2002}.
+
+Niech dla wektora zmiennych losowych $X'=[X_{1}, X_{2}, \cdots, X_{p}]$, posiadającego macierz kowariancji $\Sigma$ z wartościami własnymi $\lambda_{1} \geqslant \lambda_{2} \geqslant ... \geqslant \lambda_{p}
+\geqslant 0$. Rozważmy wtedy kombinacje liniowe:
+\begin{align}
+    \begin{split}
+        Y_{1} &= a'_{1}X = a_{11}X_{1} + a_{12}X_{2} + \cdots + a_{1p}X_{p} \\
+        Y_{2} &= a'_{2}X = a_{21}X_{1} + a_{22}X_{2} + \cdots + a_{2p}X_{p} \\
+        &\vdots \\
+        Y_{p} &= a'_{p}X = a_{p1}X_{1} + a_{p2}X_{2} + \cdots + a_{pp}X_{p}
+    \end{split}
+\end{align}
+
+Wtedy można wykazać że:
+\begin{align}
+    Var(Y_{i} = a'_{i}\Sigma a_{i} \quad i = 1,2, \cdots, p 
+    \label{eq:wariancja} \\
+    Cov(Y_{i}, Y_{k}) = a'_{i} \Sigma a_{k} \quad i,k = 1,2, \cdots, p
+\end{align}
+
+gdzie $Var$ i $Cov$ to odpowiednio wariancja i kowariancja. Główne składowe to te \textit{nieskorelowane} kombinacje liniowe $Y_{1}, Y_{2}, \cdots, Y_{p}$ których variancje w \ref{eq:wariancja} są
+największe.
+
+
 \subsection{Ukryte Modele Markowa}
 
 \section{Klasyfikacja danych}
