@@ -3,13 +3,21 @@
 \section{Pozyskiwanie danych}
 Do pozyskiwania danych wykorzystuje się technologię LIDAR. Jest to nowoczesna metoda pozyskiwania informacji dotyczących wysokości terenu \cite{Marmol2003}. Efektem jej działania jest tzw “chmura punktów”, która uwzględnia wysokość nie tylko powierzchni ziemi, ale również drzew, budynków itp.
 
-Dane zbierane są za pomocą aparatury umieszczonej w samolotach, na którą składają się odbiornik GPS służący do określania pozycji, czujnik INS pozwalający na określenie aktualnego przechyłu pojazdu oraz laser LRF mierzący odległość \cite{WBPW2012}. Laser emituje wiązkę w kierunku ziemi. Na podstawie czasu jaki minął między emisją wiązki a jej odczytem, określana jest odległość między aparaturą a badanym punktem. Jednocześnie zapisywane jest położenie skanera, co pozwala umieścić punkt w układzie odniesienia (np: WGS 84).
-
-Urządzenia LIDAR pozwalają na rejestrację niemal dowolnych ilości tzw. impulsów pośrednich, które pochodzą np: od drzew. Dzięki temu chmura punktów pochodząca z jednego przelotu może posłużyć zarówno do utworzenia numerycznego modelu pokrycia terenu, jak również do utworzenia numerycznego modelu rzeźby terenu.
+Dane zbierane są za pomocą aparatury umieszczonej w samolotach, na którą składają się odbiornik GPS służący do określania pozycji, czujnik INS pozwalający na określenie aktualnego przechyłu pojazdu oraz laser
+LRF mierzący odległość \cite{WBPW2012}. Laser emituje wiązkę w kierunku ziemi. Na podstawie czasu jaki minął między emisją wiązki a jej odczytem, określana jest odległość między aparaturą a badanym punktem.
+Jednocześnie zapisywane jest położenie skanera, co pozwala umieścić punkt w układzie odniesienia (np: WGS 84). Poza odległością (która przekłada się na wysokość punktu nad powierzchnią) zbierane są też inne
+informacje takie jak \cite{chen2014}:
+\begin{itemize}
+\item Intensywność (zwana również amplitudą) - Intensywność wskazuje na charakterystykę odbicia od powierzchni, tym samym mogąc posłużyć do analizy typu powierzchni \cite{yunfei2008};
+\item Różnica w wysokości pierwszego i ostatniego odbicia - Wiązka laserowa może w pewnym stopniu penetrować napotkane powierzchnie. W sytuacji, w której część wiązki spenetruje napotkaną powierzchnię,
+    wysokość powiązana z pierwszym odbiciem będzie inna, niż wysokość powiązana z ostatnim odbiciem. Z drugiej strony, dla nawierzchni twardych, jak dachy czy ulice, wartości te dla wszystkich odbić będą 
+    takie same \cite{chen2014};
+\item Różnica w intensywności pierwszego i ostatniego odbicia - Może być wykorzystana analogicznie do różnicy w wysokości \cite{chen2014}.\ldots
+\end{itemize}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=1\textwidth]{img/LIDAR.jpg}
+\includegraphics[width=0.9\textwidth]{img/LIDAR.jpg}
 \caption{Schematycznie przedstawiony nalot podczas zbierania danych LIDAR}
 \label{fig:lidar}
 \end{figure}
@@ -181,5 +189,9 @@ obiektów do różnych klas na podstawie opisanych powyżej czterech atrybutów,
         \hline
     \end{tabular}
 \end{table}
+
+\subsection{Analiza Głównych Składowych}
+
+\subsection{Ukryte Modele Markowa}
 
 \section{Klasyfikacja danych}
