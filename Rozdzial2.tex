@@ -228,5 +228,55 @@ W drugiej z cytowanych prac autorzy postawili sobie za cel określenie jakiego g
 Ze względu na mnogość danych, zdecydowali się na wykorzystanie PCA aby zmniejszyć ilość zmiennych a tym samym - przyspieszyć obliczenia.
 
 \subsection{Ukryte Modele Markowa}
+Ukryte modele markowa HMM (z ang. \textit{Hidden Markov Model}, czasem nazywane też łańcuchami Markowa) to metoda statystyczna służąca do modelowania procesów.
+Na rysunku \ref{fig:lancuch_markova} przedstawiono przykładowy model.
+Składa się on ze stanów (X, Y, Z), prawdopodobieństwa przejść między nimi oraz emisji które są stowarzyszone z każdym ze stanów.
+Jeżeli zaobserowawliśmy sekwencję $2-1-1$, to wiemy że byliśmy kolejno w stanach $Y-X-X$ \cite{blunsom2004}. 
+
+\begin{figure}
+    \label{fig:lancuch_markova}
+\end{figure}
+
+Formalna definicja ukrytych modeli markowa prezentuje się następująco:
+\begin{equation}
+    \lambda = (A,B,\pi)
+\end{equation}
+
+$S$ jest zbiorem stanów, a $V$ zbiorem obserwacji:
+\begin{align}
+    S = (s_{1}, s_{2}, \cdots, s_{N}) \\
+    V = (v_{1}, v_{2}, \cdots, v_{M}) 
+\end{align}
+
+Definiujemy $Q$ jako sekwencję przejść o stałej długości $T$ i powiązaną z nim sekwencję obserwacji $O$:
+\begin{align}
+    Q = q_{1}, q_{2}, \cdots, q_{T} \\
+    O = o_{1}, o_{2}, \cdots, o_{T}
+\end{align}
+
+Macierz $A$ zawiera prawdopodobieństwa przejścia ze stanu $i$ do stanu $j$. Należy zaznaczyć, iż prawdopodobieństwa te są niezależne od czasu $t$:
+\begin{equation}
+    A = [a_{ij}], a_{ij} = P(q_{t} = s_{j} | q_{t-1} = s_{i})
+\end{equation}
+
+$B$ jest macierzą obserwacji. Zawiera prawdopodobieństwa zaobserwowania emisji $k$ przy staniej $i$, niezależnie od czasu $t$:
+\begin{equation}
+    B = [b_{i}(k)], b_{i}(k) = P (x_{t} = v_{k} | q_{t} = s_{i})
+\end{equation}
+
+$\pi$ jest macierzą określająca prawdopodobieństwa wystąpienia $i-tego$ stanu jako pierwszego:
+\begin{equation}
+    \pi = [\pi_{i}], \pi_{i} = P(q_{1} = s_{i})
+\end{equation}
+
+Dodatkowo poczyniono dwa założenia. Pierwszym z nich jest brak pamięci tzn. stan aktualny może zależeć tylko od stanu poprzedniego:
+\begin{equation}
+    P(q_{t}|q_{1}^{t-1}) = P(q_{t}|q_{t-1})
+\end{equation}
+
+Drugim założeniem jest niezależność, tzn. iż obserwacja z czasu $t$ jest zależna tylko od stanu z czasu $t$:
+\begin{equation}
+    P(o_{t}|o_{1}^{t-1},q_{1}^{t}) = P(o_{t}|q_{t})
+\end{equation}
 
 \section{Klasyfikacja danych}
