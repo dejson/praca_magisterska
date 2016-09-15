@@ -37,14 +37,13 @@ wszystkich trójkątów należących do triangulacji. Na rysunku \ref{fig:triang
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/triangulacja.jpg}
+    \includegraphics[width=0.3\textwidth]{img/triangulacja.jpg}
     \caption{Triangulacja Delaunay z zaznaczonymi okręgami opisanymi na trójkątach}
     \label{fig:triangulacja}
 \end{figure}
 
 \subsubsection{Aplikacje}
 Triangulacja Delaunay'a jest często wykorzystywana przy przetwarzaniu danych LIDAR. Dzięki stosowaniu filtracji może służyć do oddzielania poszczególnych zbiorów punktów od siebie \cite{koziol2007} bądź też do znajdywania łamanej otaczającej zadany zbiór punktów \cite{website:HumanGeoBlog}. Istnieje wiele implementacji algorytmu pozwalającego na przetworzenie chmury punktów do postaci siatki trójkątów \cite{Lee1980,Dwyer1987,jiang2010}. W artykule \cite{Lee1980} opisano dwa algorytmy tworzenia takiej siatki - dziel i zwyciężaj oraz tribuild. Pierwszy z nich o złożoności obliczeniowej $O(N log N)$ rekurencyjnie dzieli zbiór punktów pośrednich na mniejsze zbiory, w nich dokonuje triangulacji a następnie łączy je. Drugi z nich o złożoności obliczeniowej $O(N^{3/2})$ zakłada znajomość prostokąta który otacza zadany zbiór punktów. Prostokąt ten jest dzielony na mniejsze, a następnie dla każdego mniejszego prostokąta:
-
 \begin{algorithmic}
     \For {punkt P w punktach należących do prostokąta}
     \If {P jedyny punkt w prostokącie}
@@ -59,7 +58,7 @@ Przykładowe kolejne etapy tak przeprowadzonej triangulacji pokazano na rysunku 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/iter_triangulacja.jpg}
+    \includegraphics[width=0.4\textwidth]{img/iter_triangulacja.jpg}
     \caption{Iteracyjna triangulacja}
     \label{fig:iter_triangulacja}
 \end{figure}
@@ -69,7 +68,6 @@ W 1987 Dwayer zaproponował szybszy algorytm dziel i zwyciężaj, o zakładanej 
 \subsection{Maszyny wektorów nośnych}
 
 \subsubsection{Definicja} 
-
 Maszyny wektorów nośnych SVN (z ang. \textit{support vector machine}) pozwalają na rozwiązanie tzw. problemu klasyfikacji. Definicja problemu brzmi następująco: dla pewnej przestrzeni $\Omega$ zawierającej wektory danych x, należące do dwóch klas
 $\Omega = \{(x_{i}, c_{i}) | x_{i} \in R^p, c_{i} \in \{-1,1\}\}$
 należy znaleźć klasyfikator który podzieli tę przestrzeń na dwa rozłączne obszary jak najlepiej odpowiadające klasom $\{-1, 1\}$ \cite{stefanowski2010}. Do rozdzielenia zbioru na dwa służy tzw. liniowa funkcja separująca (lub jej uogólnienie - hiperpłaszczyzna dla przypadków n-wymiarowych), która wyznacza podział przestrzeni na dwa podobszary.
@@ -90,7 +88,7 @@ należy znaleźć klasyfikator który podzieli tę przestrzeń na dwa rozłączn
 
 Na rysunku \ref{fig:liniowa_separacja} przedstawiono różne poprawne sposoby separowania tego samego zbioru. Można w szczególności wyróżnić pary hiperpłaszczyzn $b_{i1}$ oraz $b_{i2}$, będących równoległych do 
 siebie, powstałych poprzez przesuwanie jednej hiperpłaszczyzny od punktu granicznego pierwszego zbioru do punktu granicznego drugiego zbioru (rysunek \ref{fig:rownolegla_separacja}).
-
+\newpage
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.33\textwidth]{img/granica_rownolegla.jpg}
@@ -241,6 +239,8 @@ Jeżeli zaobserowawliśmy sekwencję $2-1-1$, to wiemy że byliśmy kolejno w st
     \caption{Łańcuch Markowa}
     \label{fig:lancuch_markova}
 \end{figure}
+
+\newpage
 
 Formalna definicja ukrytych modeli markowa prezentuje się następująco:
 \begin{equation}
