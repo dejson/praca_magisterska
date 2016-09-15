@@ -17,15 +17,57 @@ Web Map Service jest standardem opisującym sposób udostępniania map przez ser
 Zgodnie ze standardem \cite{OpenGIS_WMS2006}, rastry te mają być generowane dynamicznie na podstawie danych geograficznych.
 Mapy najczęściej są zwracane w jednym z popularnych formatów graficznych, takich jak PNG, GIF lub JPG. Rzadziej jako grafika wektorowa w formatach SVG lub WebCGM.
 
-Standard definiuje 3 dozwolone operacje: pierwsza zwraca informacje opisujące serwer, druga zwraca mapę na podstawie zdefiniowanych parametrów geograficznych, trzecia (opcjonalna) operacja
-zwraca informację dotyczące cech obiektów, znajdujących się na mapie. Wszystkie te operacje mogą być wywoływane za pomocą przeglądarki internetowej poprzez URL. Parametry, które należy
-podać zależą od rodzaju rządania. W przypadku prośby o dostarczenie mapy są to np: wielkość obrazka wynikowego, część Ziemi która ma zostać zobrazowana czy odwzorowanie. Lista parametrów
-została przedstawiona w tabeli \ref{tab:}. Ponadto, standard dopuszcza otrzymywanie poszczególnych map z różnych serwerów. Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów
-mapowych których klienci mogą tworzyć własne mapy.
+Standard definiuje 3 dozwolone operacje: 
+\begin{enumerate}
+    \item GetCapabilietes - zwraca informację opisujące serwer (m.in. jego zawartość);
+    \item GetMap - zwraca mapę na podstawie zdefiniowanych parametrów geograficznych;
+    \item GetFeatureInfo (opcjonalna) - zwraca informację dotyczące cech obiektów, znajdujących się na mapie.
+\end{enumerate}
+Wszystkie te operacje mogą być wywoływane za pomocą przeglądarki internetowej poprzez URL. Parametry, które należy podać zależą od rodzaju rządania.
+W przypadku prośby o dostarczenie mapy są to np: wielkość obrazka wynikowego, część Ziemi która ma zostać zobrazowana czy odwzorowanie. Pełna lista parametrów
+została przedstawiona w tabeli \ref{tab:parametry_zapytania_GetMap}. Ponadto, standard dopuszcza otrzymywanie poszczególnych map z różnych serwerów.
+Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów mapowych których klienci mogą tworzyć własne mapy.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-TABELA
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[h!]
+    \centering
+    \caption{Parametry zapytania GetMap}
+    \label{tab:parametry_zapytania_GetMap}
+    \begin{tabular}{|p{0.35\linewidth}|p{0.15\linewidth}|p{0.5\linewidth}|}
+        \hline
+        Parametr & Wymagany & Opis \\
+        \hline
+        VERSION=1.3.0 & Tak & Wersja serwera z którą chcemy się połączyć \\
+        \hline
+        REQUEST=GetMap & Tak & Nazwa rządania \\
+        \hline
+        LAYERS=lista\_warstw & Tak & Oddzielona przecinkami lista 1 lub więcej warstw \\
+        \hline
+        STYLES=lista\_styli & Tak & Oddzielona przecinkami lista styli (jednego na każdą warstwę) \\
+        \hline
+        CRS=system\_odniesienia & Tak & Referencyjny system odniesienia \\
+        \hline
+        BBOX=minx,miny,maxx,maxy & Tak & Rogi prostokąta (lewy dolny, prawy górny), który chcemy otrzymać w jednostkach wybranego systemu odniesienia \\
+        \hline
+        WIDTH=szerokość & Tak & Szerokość zwróconego obrazka, w pikselach \\
+        \hline
+        HEIGHT=wysokość & Tak & Wysokość zwróconego obrazka, w pikselach \\
+        \hline
+        FORMAT=format & Tak & Format zwróconego obrazka \\
+        \hline
+        TRANSPARENT=TRUE|FALSE & Nie & Przezroczystość tła mapy (domyślnie wyłączone) \\
+        \hline
+        BGCOLOR=kolor & Nie & Kolor tła w formacie heksadecymalnym (domyślnie 0xFFFFFF - biały) \\
+        \hline
+        EXCEPTIONS=format\_wyjątków & Nie & Format w jakim mają być zwracane wyjątki przez serwer WMS (domyślnie XML) \\
+        \hline
+        TIME=czas & Nie & Czas dla jakiego chcemy otrzymać mapę \\
+        \hline
+        Elevation=wysokość & Nie & Wysokość rządanej warstwy (np: dziura ozonowa na różnej wysokości) \\
+        \hline
+        Inne wymiary & Nie & Dla niektórych danych mogą być dostępne inne niż domyślne wymiary (np: podczerwone i zwykłe zdjęcia satelitarne) \\
+        \hline
+    \end{tabular}
+\end{table}
 
 Przykładowe zapytanie do serwera WMS wygląda następująco: 
 
