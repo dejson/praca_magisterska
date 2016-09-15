@@ -228,12 +228,17 @@ W drugiej z cytowanych prac autorzy postawili sobie za cel określenie jakiego g
 Ze względu na mnogość danych, zdecydowali się na wykorzystanie PCA aby zmniejszyć ilość zmiennych a tym samym - przyspieszyć obliczenia.
 
 \subsection{Ukryte Modele Markowa}
+
+\subsubsection{Definicja}
 Ukryte modele markowa HMM (z ang. \textit{Hidden Markov Model}, czasem nazywane też łańcuchami Markowa) to metoda statystyczna służąca do modelowania procesów.
 Na rysunku \ref{fig:lancuch_markova} przedstawiono przykładowy model.
 Składa się on ze stanów (X, Y, Z), prawdopodobieństwa przejść między nimi oraz emisji które są stowarzyszone z każdym ze stanów.
 Jeżeli zaobserowawliśmy sekwencję $2-1-1$, to wiemy że byliśmy kolejno w stanach $Y-X-X$ \cite{blunsom2004}. 
 
-\begin{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{img/HMM.png}
+    \caption{Łańcuch Markowa}
     \label{fig:lancuch_markova}
 \end{figure}
 
@@ -278,5 +283,9 @@ Drugim założeniem jest niezależność, tzn. iż obserwacja z czasu $t$ jest z
 \begin{equation}
     P(o_{t}|o_{1}^{t-1},q_{1}^{t}) = P(o_{t}|q_{t})
 \end{equation}
+
+\subsubsection{Aplikacje}
+Ukryte modele markowa są najczęsciej wykorzystywane w zagadnieniach związanych z rozumieniem i syntezą mowy \cite{blunsom2004}, jednakże istnieją przykłady na wykorzystanie tej metody do przetwarzania
+chmur punktów \cite{wang2014}. W pracy \cite{wang2014} wykorzystano HMM do stworzenia autonomicznego pojazdu. Metoda ta posłużyła do wykrywania typów powierzchni.
 
 \section{Klasyfikacja danych}
