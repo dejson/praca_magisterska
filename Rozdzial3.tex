@@ -2,7 +2,46 @@
 W niniejszym rozdziale zostaną przedstawione protokoły wykorzystywane podczas serwowania map, następnie zostaną omówione serwery umożliwiające przesyłanie map (GeoServer oraz MapServer).
 W ostatniej części zostaną przedstawione biblioteki klienckie mogące łączyć się z serwerami i prezentujące mapy użytkownikowi.
 
-\section{Protokoły serwowania map - WMS, WFS WCS}
+\section{Protokoły serwowania map - WMS, WFS, WCS}
+W niniejszej sekcji zostaną opisane protokoły serwowania map:
+\begin{itemize}
+\item WMS - Web Map Service - standard udostępniania map w postaci rastrowej za pomocą protokołu HTTP;
+\item WFS - Web Feature Service - standard udostępniania danych przestrzennych w języku znacznikowym GML;
+\item WCS - Web Coverage Service - standard udostępniania zmian w danych przestrzennych w czasie.
+\end{itemize}
+
+Standardy te zostały opracowane przez Open Geospatial Consortium (OCG). Jest to międzynarodowa organizacja non-profit, skupiająca się na tworzeniu wysokiej jakości standardów dotyczących systemów GIS.
+
+\subsection{WMS}
+Web Map Service jest standardem opisującym sposób udostępniania map przez serwer w postaci rastrowej za pomocą protokołu HTTP.
+Zgodnie ze standardem \cite{OpenGIS_WMS2006}, rastry te mają być generowane dynamicznie na podstawie danych geograficznych.
+Mapy najczęściej są zwracane w jednym z popularnych formatów graficznych, takich jak PNG, GIF lub JPG. Rzadziej jako grafika wektorowa w formatach SVG lub WebCGM.
+
+Standard definiuje 3 dozwolone operacje: pierwsza zwraca informacje opisujące serwer, druga zwraca mapę na podstawie zdefiniowanych parametrów geograficznych, trzecia (opcjonalna) operacja
+zwraca informację dotyczące cech obiektów, znajdujących się na mapie. Wszystkie te operacje mogą być wywoływane za pomocą przeglądarki internetowej poprzez URL. Parametry, które należy
+podać zależą od rodzaju rządania. W przypadku prośby o dostarczenie mapy są to np: wielkość obrazka wynikowego, część Ziemi która ma zostać zobrazowana czy odwzorowanie. Lista parametrów
+została przedstawiona w tabeli \ref{tab:}. Ponadto, standard dopuszcza otrzymywanie poszczególnych map z różnych serwerów. Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów
+mapowych których klienci mogą tworzyć własne mapy.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TABELA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Przykładowe zapytanie do serwera WMS wygląda następująco: 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+LISTING
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Wynik takiego zapytania przedstawiono na rysunku \ref{fig:pomorze_gdanskie}.
+
+\begin{figure}[h!]
+\label{fig:pomorze_gdanskie}
+\end{figure}
+
+\subsection{WFS}
+
+\subsection{WCS}
 
 \section{Geoserver}
 
