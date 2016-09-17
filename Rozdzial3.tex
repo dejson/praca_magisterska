@@ -223,6 +223,21 @@ Przykładowe zapytanie i odpowiedź serwera:
 
 \subsection{WCS}
 
+Dzięki usługom opartym o standrady WMS i WFS możliwe jest przeglądanie, przetwarzanie i edytowanie danych geograficznych.
+Rozwój algorytmów służących do przetwarzania danych geograficznych (patrz rozdział 2), powoduje powstawanie dużej ilości danych w postaci pokryć macierzowych
+(z ang. \textit{coverages}). Zwykle są to zdjęcia lotnicze i satelitarne, ale mogą też być to chmury punktów czy też numeryczne modele terenu \cite{sudra2012}.
+Aby umożliwić dostęp do tego typu informacji, stworzono standrad Web Coverage Service WCS.
+
+W porównaniu do WMS, który przedstawia dane w postaci statycznych map (obrazków), WCS zwraca dane razem z ich opisem oraz semantyką.
+Pozwala to na analizowanie, ekstrapolowanie itp. danych, a nie tylko ich wyświetalnie.
+W przeciweństwie do WFS, który zwraca dyskretne dane dotyczące zjawisk geograficznych, WFC przedstawia dane w sposób ciągły.
+Serwery WCS mogą dostarczać dane w różnych formatach, w szczególności DTED, GeoTIFF, NTF, HDF-EOS i GML. Podobnie jak standard WMS,
+WCS także definiuje 3 zapytania \cite{OpenGIS_WCS2012}:
+\begin{itemize}
+    \item GetCapabilities - zwraca informacje opisujące serwer (m.in. jego zawartość);
+    \item DescribeCoverage - zwraca listę wszystkich dostępnych pokryć macierzowych wraz z ich opisami;
+    \item GetCoverage - zwraca rządane pokrycie macierzowe.
+\end{itemize}
 
 \section{Geoserver}
 
