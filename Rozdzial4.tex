@@ -1,0 +1,11 @@
+\chapter{Implementacja algorytmu}
+
+Dane pochodzące ze skanowania laserowego wysokiej rozdzielczości zajmują bardzo dużo miejsca, przez co
+dostęp do nich poprzez Internet wymaga relatywnie długiego czasu (rzędu kilkunastu sekund). Powoduje to,
+iż niemożliwym jest zbudowanie systemu który w czasie rzeczywistym przedstawiałby te dane w sposób podobny
+do aktualnie dostępnych w Internecie map, jak Google Maps. Aby zaradzić temu problemowi, stworzono dwa algorytmy.
+Ich celem było takie przetworzenie danych wejsciowych, aby zmiejszyć ich objętość jednoczesnie nie tracąc zawartych w nich informacji.
+W niniejszym rozdziale znajdują się opisy tych algorytmów, opis przekształcania ich do formatu shapefile w celu udostępnienia
+poprzez GeoServer.
+
+\section{Algorytm Naiwny}
