@@ -125,6 +125,8 @@ Ponadto, społeczności skupione wokół tych samych projektów często definiuj
 Przykładowy fragment pliku GML:
 
 \begin{lstlisting}[frame=L, language=xml]
+<!-- Źródło: http://galaxy.eti.pg.gda.pl/katedry/ksg/pracownicy/Marcin.Kulawiak/
+TWDP/3D_Data_Formats.pdf -->
 <gml:Point>
     <gml:posList>
         50,100
@@ -170,6 +172,7 @@ Lista rządań prezentuje się następująco:
 
 Przykładowe zapytanie i odpowiedź serwera:
 \begin{lstlisting}[frame=L, language=XML]
+<!-- Źródło: OpenGIS Web Feature Service 2.0 Interface Standard -->
 <!-- Zapytanie -->
 <?xml version="1.0" ?>
 <GetFeature
@@ -330,6 +333,7 @@ obiekty \cite{MapServer2011}:
 Poniżej przedstawiono przykładowy plik konfiguracyjny wraz ze zwróconą mapą (rysunek \ref{fig:mapserver_config}).
 
 \begin{lstlisting}[frame=L]
+# Źródło: http://mapserver.org/introduction.html#introduction-to-the-mapfile
 MAP
     NAME "sample"
     STATUS ON
@@ -403,6 +407,7 @@ Aby wyświetlić dane ze źródła, potrzebny jest obiekt warstwy (\textit{ol.la
 Oczywiście, na jednej mapie może być dowolnie wiele warstw. Wykorzystując opisane komponenty można stworzyć taką przykładową aplikację:
 
 \begin{lstlisting}[frame=L, language=JavaScript]
+//Źródło: http://openlayers.org/en/latest/doc/tutorials/concepts.html
 <div id="map" style="width: 100\%,height:400px"></div>
 <script>
   new ol.Map({
@@ -441,7 +446,8 @@ przy użyciu rozszerzeń. Biblioteka definiuje cztery główne rodzaje obiektów
 
 Ponadto konieczne jest wykorzystanie obiektu mapy (\textit{Map}), który jest obiektem nadrzędnym dla pozostałych.
 Na podstawie tych komponentów można stworzyć przykładową aplikację:
-\begin{lstlisting}[frame=L, language=JavaScript]
+\begin{lstlisting}[frame=L, language=JavaScript, caption={bla bla}]
+//Źródło: http://leafletjs.com/examples/quick-start.html
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
  
