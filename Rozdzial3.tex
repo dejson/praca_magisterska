@@ -3,6 +3,8 @@ W niniejszym rozdziale zostaną przedstawione protokoły wykorzystywane podczas 
 W ostatniej części zostaną przedstawione biblioteki klienckie mogące łączyć się z serwerami i prezentujące mapy użytkownikowi.
 
 \section{Protokoły serwowania map - WMS, WFS, WCS}
+\label{chap:protokoly}
+
 W niniejszej sekcji zostaną opisane protokoły serwowania map:
 \begin{itemize}
 \item WMS - Web Map Service - standard udostępniania map w postaci rastrowej za pomocą protokołu HTTP;
@@ -88,10 +90,10 @@ request=GetMap
 Wynik takiego zapytania przedstawiono na rysunku \ref{fig:pomorze_gdanskie}.
 
 \begin{figure}[h!]
-    \label{fig:pomorze_gdanskie}
     \centering
     \includegraphics[width=0.7\textwidth]{img/pomorze_gdanskie.png}
     \caption{Pomorze Gdańskie zwrócone przez geoportal}
+    \label{fig:pomorze_gdanskie}
 \end{figure}
 
 \subsection{WFS}
@@ -239,10 +241,151 @@ WCS także definiuje 3 zapytania \cite{OpenGIS_WCS2012}:
     \item GetCoverage - zwraca rządane pokrycie macierzowe.
 \end{itemize}
 
-\section{Geoserver}
+\section{GeoServer i MapServer}
 
-\section{MapServer}
+Istnieją różne technologie dostępu do danych geograficznych, jak chociażby opisane w \autoref{chap:protokoly} standardy WMS, WFS i WCS.
+Jednakże są to tylko standardy. Konieczne jest stworzenie oprogramowania, które będzie je implementowało, a tym samym umożliwi
+uzytkownikom dostęp do danych. GeoServer oraz MapServer są przykładami takiego oprogramowania.
 
-\section{OpenLayers}
+GeoServer jest serwerem pozwalającym na pozyskiwanie i edytowanie danych geograficznych.
+Jest napisany w języku Java jako oprogramowanie typu open-source.
+Jako tego typu projekt, jest tworzony, testowany i rozwijany przez grupę osób i organizacji rozsianych po całym świecie.
+GeoServer stanowi referencyjną implementację standardów WFS i WCS. Ponadto posiada certyfikat wysokiej wydajności implementacji WMSa.
+Serwer ten obsługuje dane geograficzne różnych rodzajów, w tym formaty bazodanowe (PostGIS, Oracle Spatial) jak i plikowe (Shapefiles, GeoTIFF)
+jako źródła danych. Poza tym możliwe jest też wykorzystanie innego serwera WMS czy WFS jako źródła.
+Format danych zwracanych zależny jest od wykorzystywanego protokołu. Dodatkowo, wraz z serwerem dostarczana jest wbudawana aplikacja
+oparta na OpenLayers (\ref{chap:OpenLayers}), która umożliwia podgląd umieszczanych map bez konieczności poznawania składni zapytań \cite{GeoServerManual2016}.
 
-\section{Leaflet.js}
+GeoServer nie istnieje w próżni. Do jego działania konieczna jest baza danych (w tym przypadku PostGIS). Dodatkowo istnieje też usługa
+GeoWebCache, która zapisuje odpowiedzi na zapytania. Przyspiesza to działanie serwera z punktu widzenia użytkownika, który nie musi
+czekać na wygenerowanie odpowiedzi \cite{OpenGeo2012}. Na rysunku \ref{fig:GeoServerArchitecture} przedstawiono tę architekturę, wraz z zaznaczoną
+aplikacją użytkownika.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{img/geoserver_architecture.png}
+    \caption{Architektura GeoServer}
+    \source{http://presentations.opengeo.org/2012\_FOSSGIS/suiteintro/\_images/stack\_geoserver.png}
+    \label{fig:GeoServerArchitecture}
+\end{figure}
+
+Jak wspomniano wyżej, GeoServer obsługuje wiele różnych standardów OGC, w tym WMS. W momencie przyjścia rządania o dostarczenie mapy,
+serwer wykonuje następujące operacje:
+\begin{enumerate}
+    \item Ładowanie danych z bazy (opcjonalne filtrowanie)
+    \item Nałożenie stylu
+    \item Renderowanie obrazka i zwrócenie do użytkownika
+\end{enumerate}
+Na rysunku \ref{fig:geoserver_WMS_architecture} przedstawiono jak przebiega ten proces.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/geoserver_wms_architecture.png}
+    \caption{Schemat odpowiedzi GeoServera na zapytanie GetMap}
+    \source{http://presentations.opengeo.org/2012\_FOSSGIS/suiteintro/\_images/wms.png}
+    \label{fig:geoserver_WMS_architecture}
+\end{figure}
+
+Obsługa GeoServera możliwa jest z poziomu przeglądarki. Nie ma konieczności edytowania plików konfiguracyjnych
+w celu dodania nowego źródła danych, utworzenia nowej warstwy czy zdefiniowania nowego stylu. Dzięki temu rozwiązaniu
+GeoServer może być łatwo wykorzystywany także przez użytkowników nie zaznajomionych z obsługą typowych aplikacji serwerowych.
+Na rysunku \ref{} przedstawiono interfejs WWW dostarczany przez GeoServer.
+
+MapServer stanowi alternatywę dla GeoServera. Podobnie jak poprzednik, MapServer stanowi implementację różnych standardów,
+w tym WMS, WFS i WCS. Jest napisany w języku C/C++. Rozwijany jest przez wiele firm z całego świata jako projekt open-source.
+Podstawowoym źródłem danych dla MapServera są pliki shapefile, ale możliwe jest też wykorzystanie innych źródeł. 
+Moożliwe jest też wykorzystanie innego serwera WMS czy WFS jako źródła danych \cite{MapServer2011}.
+Format danych zwracanych jest zależny od wybranego protokołu.
+
+Najprostsza aplikacja oparta o MapServer składa się z następujących komponentów:
+\begin{itemize}
+    \item Dane wejściowe - mogące pochodzić z loklanych baz danych, jak i zewnętrznych serwerów;
+    \item Aplikacje MapServer i MapScript - odpowiedzialne za obsługe rządania. Ich konfiguracja zawarta jest w plikach Mapfile
+    \item Serwer WWW (Apache) - odpowiada za komunikację poprzez protokół HTTP z klientem
+\end{itemize}
+
+Architektura ta została przedstawiona na rysunku \ref{fig:mapserver_architecture}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/mapserver_architecture.png}
+    \caption{Architektura MapServera}
+    \source{http://mapserver.org/\_images/architecture.png}
+    \label{fig:mapserver_architecture}
+\end{figure}
+
+W przeciwieństwie do GeoServera, MapServer nie posiada interfejsu graficznego. Wszystkie operacje takie jak,
+dodanie nowej mapy, zmiana stylu czy dodanie nowej warstwy, muszą być być przeprowadzane przy użyciu plików
+konfiguracyjnych typu Mapfile (.map). Są to pliki tektowe, których konwencja przypomina tą znaną z plików
+konfiguracyjnych dla serwisów działających w systemach linux. W ramach pliku mapfile można zdefiniować następujące
+obiekty \cite{MapServer2011}:
+\begin{itemize}
+    \item MAP - obiekt odzwierciedlający całą mapę;
+    \item LAYER - obiekt odzwierciedlający warstwę mapy. Musi być typu \textit{RASTER}, wtedy warstwa bedzie warstwą rastrową,
+        bądź typu \textit{POINT, LINE} lub \textit{POLYGON} - wtedy warstwa będzie warstwą wektorową;
+    \item CLASS - obiekt przechowujący dane dotyczące styli;
+    \item SYMBOL - symbol do umieszczenia na mapie;
+    \item LABEL - umożliwia dodanie napisu na mapie.
+\end{itemize}
+
+Poniżej przedstawiono przykładowy plik konfiguracyjny wraz ze zwróconą mapą (rysunek \ref{fig:mapserver_config}).
+
+\begin{lstlisting}[frame=L]
+MAP
+    NAME "sample"
+    STATUS ON
+    SIZE 600 400
+    SYMBOLSET "../etc/symbols.txt"
+    EXTENT -180 -90 180 90
+    UNITS DD
+    SHAPEPATH "../data"
+    IMAGECOLOR 255 255 255
+    FONTSET "../etc/fonts.txt"
+
+    #
+    # Start of web interface definition
+    #
+    WEB
+        IMAGEPATH "/ms4w/tmp/ms_tmp/"
+        IMAGEURL "/ms_tmp/"
+    END # WEB
+
+    #
+    # Start of layer definitions
+    #
+    LAYER
+        NAME 'global-raster'
+        TYPE RASTER
+        STATUS DEFAULT
+        DATA bluemarble.gif
+    END # LAYER
+END # MAP
+\end{lstlisting}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/mapserver_config.jpg}
+    \caption{Przykładowa odpowiedź od MapServera}
+    \source{http://mapserver.org/\_images/bluemarble-rendered.jpg}
+    \label{fig:mapserver_config}
+\end{figure}
+
+\section{OpenLayers i Leaflet.js}
+\label{chap:OpenLayers}
+
+W poprzednim rozdziale opisano dwa konkurencyjne rozwiązania serwerowe, które, ogólnie rzecz ujmując, służą do dostarczania danych geograficznych użytkownikowi.
+Do komunikacji z takim serwerem, konieczne jest posiadanie odpowiedniego klienta. Zgodnie ze standardami OCG \cite{OpenGIS_WMS2006,OpenGIS_WFS2010,OpenGIS_WCS2012}
+komunikacja możliwa jest przy użyciu przeglądarki internetowej. Jednakże, ręczne tworzenie zapytań jest długotrwałe i mało wygodne. Dlatego powstały biblioteki
+dla języka JavaScript, ułatwiające komunikację z serwerami WMS, WFS i WCS. W tym podrozdziale zostaną opisane dwie z nich - OpenLayers i Leaflet.js
+
+OpenLayers powstało w 2006 roku jako odpowiedź na pojawienie się zamkniętych Google maps.
+Za cel postawiono umożliwienie użytkownikom wyświetlania na swoich stronach map w sposób podobny do tego, znanego z usług Google.
+Jednakże projekt miał umożliwiać tworzenie map z dowolnego źródła i miał być open-sourcowy \cite{website:OpenLayersHistory}.
+Akutalnie rozwiajana jest wersja 3 biblioteki, pomimo że sporo aplikacji ciągle używa poprzedniej wersji.
+
+Aplikacja wykorzystująca OpenLayers może korzystać ze źródeł w wielu formatach. Należą do nich:
+\begin{itemize}
+    \item Źródła dostarczające dane w formacie kafelkowym np: OSM, Bing;
+    \item Dane wektorowe w formatach GeoJSON, TopoJSON, KML i GML;
+    \item Dane dostarczane przez serwer zgodny ze standardami OGC.
+\end{itemize}
+
