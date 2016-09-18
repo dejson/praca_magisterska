@@ -32,8 +32,6 @@ Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów mapowych któ
 
 \begin{table}[h!]
     \centering
-    \caption{Parametry zapytania GetMap}
-    \label{tab:parametry_zapytania_GetMap}
     \begin{tabular}{|p{0.35\linewidth}|p{0.15\linewidth}|p{0.5\linewidth}|}
         \hline
         Parametr & Wymagany & Opis \\
@@ -69,6 +67,8 @@ Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów mapowych któ
         Inne wymiary & Nie & Dla niektórych danych mogą być dostępne inne niż domyślne wymiary (np: podczerwone i zwykłe zdjęcia satelitarne) \\
         \hline
     \end{tabular}
+    \caption{Parametry zapytania GetMap}
+    \label{tab:parametry_zapytania_GetMap}
 \end{table}
 
 Przykładowe zapytanie do serwera WMS wygląda następująco: 
@@ -392,7 +392,7 @@ Aplikacja wykorzystująca OpenLayers może korzystać ze źródeł w wielu forma
 Aplikacje korzystające z OpenLayers wykorzystują pewne standardowe komponenty dostarczane przez bibliotekę. Podstawowym jest mapa (\textit{ol.map}).
 Jest ona rysowana w obiekcie celu (\textit{target}). Parametry obiektu mapy mogą być określane przy jej inicjalizacji lub po jej utworzeniu.
 Obiekt mapy nie jest odpowiedzialny za oddalanie, przybliżanie czy przesuwanie mapy. Do tego celu służy obiekt widoku(\textit{ol.View}).
-Dodatkwo należy zdefiniować źródło danych (\textit{ol.source.Source}). 
+Dodatkwo należy zdefiniować źródło danych (\textit{ol.source.Source}).
 Aby wyświetlić dane ze źródła, potrzebny jest obiekt warstwy (\textit{ol.layer}). Istnieją 3 rodzaje warstw \cite{website:OpenLayersDocumentation}:
 \begin{itemize}
     \item \textit{ol.layer.Tile} - rodzaj warstwy dla danych w postaci gotowych kafelków;
@@ -428,3 +428,68 @@ Wynik działania tej aplikacji przedstawiono na rysunku \ref{fig:openlayers_exam
     \label{fig:openlayers_example}
 \end{figure}
 
+Biblioteka Leaflet.js została stworzona w 2010r. Jest prostsza od opisywanego wcześniej OpenLayers, jednakże nie posiada części funkcji.
+Została napisana w JavaScriptcie i jest projektem typu open-source.
+Aplikacja oparta na Leaflet.js może korzystać z serwerów WMS lub z formatu GeoJSON jako źródła danych. Wykorzystanie innych źródeł jest możliwe
+przy użyciu rozszerzeń. Biblioteka definiuje cztery główne rodzaje obiektów \cite{website:LeafletDocumentation}:
+\begin{itemize}
+    \item Typy rastrowe (np: TileLayer, ImageOverlay);
+    \item Typy wektorowe (np: Polygon, Polyline);
+    \item Typy grupujące (np: LayerGroup, GeoJSON);
+    \item Typy sterujace (np: Control, Zoom).
+\end{itemize}
+
+Ponadto konieczne jest wykorzystanie obiektu mapy (\textit{Map}), który jest obiektem nadrzędnym dla pozostałych.
+Na podstawie tych komponentów można stworzyć przykładową aplikację:
+\begin{lstlisting}[frame=L, language=JavaScript]
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+ 
+<div id="mapid" style="height:600px; width:800px"></div>
+
+<script>
+var mymap = L.map('mapid').setView([54.333, 18.633], 11);
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(mymap)
+</script>
+\end{lstlisting}
+
+Wynik działania tej aplikacji przedstawiono na rysunku \ref{fig:leaflet_example}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{img/leaflet_example.png}
+    \caption{Przykładowa aplikacja Leaflet.js}
+    \source{własne}
+    \label{fig:leaflet_example}
+\end{figure}
+
+Przedstawione powyżej biblioteki pełnią taką samą rolę w aplikacji webGis, jednakże różnią się co do oferowanych funkcji.
+Tabela \ref{tab:porownanie_openlayers} pokazuje różnicę pomiędzy tymi dwiema technlogiami \cite{website:OpenLayersVSLeaflet}.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|p{0.33\linewidth}|p{0.33\linewidth}|p{0.33\linewidth}|}
+        \hline
+        X & OpenLayers & Leaflet.js \\
+		\hline
+		Zgodność ze standardami OGC & Tak & Tylko WMS (WFS przez rozszerzenia) \\
+		\hline
+		Obsługiwane formaty danych wektorowych & GeoJSON, TopoJSN, KML, GML & GeoJSON \\
+        \hline
+        Ilość rozszerzeń & nieliczne & 200+ \\
+		\hline
+		Wielkość biblioteki & 465.3KB & 126.5KB \\
+		\hline
+		Format współrzędnych geograficznych & Lon/Lat & Lat/Lon \\
+		\hline
+    \end{tabular}
+    \caption{Porównanie OpenLayers i Leaflet.js}
+    \label{tab:porownanie_openlayers}
+\end{table}
+
+Jak widać z tabeli \ref{tab:porownanie_openlayers}, OpenLayers jest znacznie bardziej rozbudowaną biblioteką.
+Jednakże przypłaca to większą ilością kodu oraz większym skomplikowaniem.
+Leaflet.js ma dużą bazę rozszerzeń, która pozwala rozszerzać jego możliwości. Aczkolwiek brakuje rozszerzeń do niektórych funkcji,
+jak np: obsługa standardu WCS.
