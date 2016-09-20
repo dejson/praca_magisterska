@@ -22,7 +22,7 @@ W celu szybkiego otrzymania wyników zdecydowano się na stworzenie prostego (na
     \item Wstępne sortowanie
     \item Przypisywanie do zbiorów
     \item Filtracja zbiorów
-    \item Znalezienie otoczenia dla każdego ze zbiorów
+    \item Znalezienie otoczki wypukłej dla każdego ze zbiorów
 \end{enumerate}
 
 \subsection{Wczytywanie danych}
@@ -83,6 +83,7 @@ W uproszczeniu można powiedzieć, iż algorytm ten powoduje nałożenie siatki 
     \begin{subfigure}[b]{0.3\textwidth}
         \includegraphics[width=\linewidth]{img/sortowanie_punktow1.png}
     \end{subfigure}%
+	\quad
     \begin{subfigure}[b]{0.3\textwidth}
         \includegraphics[width=\linewidth]{img/sortowanie_punktow2.png}
     \end{subfigure}%
@@ -151,4 +152,41 @@ rysunku \ref{fig:sprawdzanie_sasiedztwa}
 Po sprawdzeniu sąsiedztwa, jeżeli drugi z punktów nie należy do żadnego zbioru, przypisuje się go do tego samego zbioru, co badany punkt \textit{point}.
 W przeciwnym przypadku (gdy oba punkty należą do różnych zbiorów), zbiory te są łączone przy wykorzystaniu metody \textit{union\_set}.
 Metoda ta przepisuje wszystkie punkty z mniejszego zbioru do większego (dbając przy tym o poprawność indeksów).
+
+\subsection{Filtracja zbiorów}
+
+Na tym etapie zostają odrzucone zbiory puste (mogły powstać wskutek łączenia zbiorów) oraz zbiory zawierające
+mniej niż $F$ punktów. Pozwala to odrzucić bardzo małe zbiory, które można zaniedbać przy odpowiednim
+poziomie szczegółowości.
+
+\subsection{Znalezienie otoczki wypukłej dla każdego ze zbiorów}
+
+Otoczką wypukłą zbioru punktów na płaszczyźnie nazywamy najmniejszy wielokąt taki, że wszystkie punkty z tego
+zbioru leżą albo wewnątrz tego wielokąta, albo na jego krawędziach \cite{website:OtoczkaTriangulacja}.
+Triangulacja Delaunaya jest podziałem otoczki wypukłej na trójkąty. W związku z tym, problem znalezienia otoczki
+można sprowadzić do problemu tworzenia triangulacji.
+
+W ramach algorytmu szukamy otoczki zbioru punktów rzutowanych na powierzchnię dwuwymiarową.
+Zakładamy, iż każdy znaleziony zbiór jest reprezentacją jakiejś powierzchni płaskiej,
+w związku z tym po znalezieniu otoczki, można odrzucić wszystkie punkty znajdujące się wewnątrz.
+Będą one interpolowane poprzez punkty graniczne.
+Odrzucenie większości skutkuje zmniejszeniem ilości pamięci koniecznej do przechowywania informacji. Jednocześnie autor ma
+świadomość ograniczeń tego rozwiązania (wywołanych przez rzutowanie), jak np: upraszczanie ostrosłópów do płaskich powierzchni, jak przedstawiono
+na rysunku \ref{fig:uproszczenie_otoczki}.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\linewidth]{img/upraszczanie_otoczki1.png}
+        \caption {Oryginalne dane}
+    \end{subfigure}
+    \quad
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\linewidth]{img/upraszczanie_otoczki2.png}
+        \caption {Dane po zrzutowaniu}
+    \end{subfigure}%
+    \caption{Rzutowanie na powierzchnię dwuwymiarową powoduje utracenie części informacji}
+    \label{fig:upraszczanie_otoczki}
+\end{figure}
+
 
