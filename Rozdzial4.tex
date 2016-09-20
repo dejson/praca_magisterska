@@ -49,6 +49,7 @@ współrzędnych punktu, przynależności do zbioru oraz klasyfikacji. Obiekt mo
 za pomocą metody \textit{get\_distance} oraz określić czy dany punkt jest jego sąsiadem przy użyciu metody \textit{is\_neighbour}.
 
 \subsection{Wstępne sortowanie}
+\label{chap:wstepne_sortowanie}
 
 Jak stwierdzono we wstępie, jednym z założeń jest, iż punkty znajdujące się blisko siebie są fragmentem tej samej powierzchni.
 Oznacza to konieczność porównywania ze sobą punktów w systemie każdy z każdym, aby stwierdzić, które z nich należą do tego samego zbioru.
@@ -65,7 +66,7 @@ współrzędnych $x, y$ punktu $p$ ze zbioru punktów wejściowych $P$:
 
 \noindent Punkty umieszczane są w odpowiadjącym ich współrzędnym komórkach macierzy (algorytm \ref{lis:sortowanie_punktow}).
 
-\begin{lstlisting}[frame=Lm language=python, caption={Sortowanie punktów}, label={lis:sortowanie_punktow}]
+\begin{lstlisting}[frame=L, language=python, caption={Sortowanie punktów}, label={lis:sortowanie_punktow}]
 sorted_points = [[ [] for _ in range(0, N)] for _ in range(0, M)]
 
 for p in P:
@@ -89,10 +90,35 @@ W uproszczeniu można powiedzieć, iż algorytm ten powoduje nałożenie siatki 
     \label{fig:sortowanie_punktow}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% NA PÓŹNIEJ
+\subsection{Przypisywanie do zbiorów}
+W tym etapie następuje podział punktów na podzbiory na podstawie sąsiedztwa. Punkty znajdujące się blisko siebie,
+są zaliczane do jednego zbioru i tym samym traktowane jako fragmenty tej samej powierzchni. Dzięki posortowaniu
+możliwe jest porównywanie tylko punktów leżących blisko siebie w projekcji dwuwymiarowej (z pominięciem składowej $z$).
+Algorytm wygląda następująco:
 
-\noindent Odległość $d$ między punktami $A, B$ jest określona przez metrykę euklidesową:
+\begin{lstlisting}[frame=L, language=python, caption={Podział punktów na zbiory w algorytmie naiwnym}, label={lis:podzial_naiwny}]
+def find_neighbour(point, neighbour_points, sets):
+    if point.point_set is None:
+        point.point_set = len(sets)
+        sets.append([point])
+
+    for p in neighbour_points:
+        if point.is_neighbour(p):
+            if p.point_set is None:
+                sets[point.point_set].append(p)
+                p.point_set = point.point_set
+            elif point.point_set != p.point_set:
+                union_sets(point.point_set, p.point_set, sets)
+\end{lstlisting}
+
+W funkcji przedstawionej na listingu \ref{lis:podzial_naiwny} dokonuje się całe clou algorytmu naiwnego.
+W pierwszej części (linie 2-4) aktualnie badany punkt (\textit{point}) tworzy nowy jednoelementowy zbiór,
+jeśli nie należy do żadnego.
+
+Następnie punkt ten jest porównywany ze wszystkimi pobliskimi\footnote{pobliskie punkty to takie,
+które znajdują się w tej samej lub sąsiedniej komórce macierzy. Patrz \autoref{chap:wstepne_sortowanie}}
+punktami. Najpierw sprawdzana jest, czy dwa punkty są sąsiadami tzn. czy leżą na tej samej powierzchni. 
+Określa się to poprzez obliczenie odległości $d$ między nimi. Odległość ta jest określana przez metrykę euklidesową:
 \begin{equation} \label{eq:odleglosc_euklidesowa_ogolna}
     d(A,B) = \sqrt{\sum\limits_{i=1}^n((x_{iA}-x_{iB})^2)}
 \end{equation}
@@ -102,6 +128,27 @@ W uproszczeniu można powiedzieć, iż algorytm ten powoduje nałożenie siatki 
     d(A,B) = \sqrt{(x_A - x_B)^2 + (y_A - y_B)^2 + (z_A - z_B)^2}
 \end{equation}
 
-\noindent Gdzie $x, y, z$ są kolejnymi współrzędymi punktu.
+Gdzie $x, y, z$ są kolejnymi współrzędymi punktu. Po obliczeniu odległości $d$ na podstawie równania \ref{eq:odleglosc_euklidesowa}
+jest sprawdzane, czy jest ona mniejsza niż stała $C$. Jeżeli tak, uznaje się że punkty są sąsiadami. Cały proces został zilustrowany na
+rysunku \ref{fig:sprawdzanie_sasiedztwa}
 
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\linewidth]{img/sasiedztwo_punktow1.png}
+        \caption {punkty należą do tego samego zbioru (d < C)}
+    \end{subfigure}
+    \quad
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\linewidth]{img/sasiedztwo_punktow2.png}
+        \caption {punkty nie należą do tego samego zbioru (d > C)}
+    \end{subfigure}%
+    \caption{Sprawdzanie sąsiedztwa punktów wobec punktu A}
+    \label{fig:sprawdzanie_sasiedztwa}
+\end{figure}
+
+
+Po sprawdzeniu sąsiedztwa, jeżeli drugi z punktów nie należy do żadnego zbioru, przypisuje się go do tego samego zbioru, co badany punkt \textit{point}.
+W przeciwnym przypadku (gdy oba punkty należą do różnych zbiorów), zbiory te są łączone przy wykorzystaniu metody \textit{union\_set}.
+Metoda ta przepisuje wszystkie punkty z mniejszego zbioru do większego (dbając przy tym o poprawność indeksów).
 
