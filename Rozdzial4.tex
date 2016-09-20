@@ -22,7 +22,7 @@ W celu szybkiego otrzymania wyników zdecydowano się na stworzenie prostego (na
     \item Wstępne sortowanie
     \item Przypisywanie do zbiorów
     \item Filtracja zbiorów
-    \item Znalezienie otoczki wypukłej dla każdego ze zbiorów
+    \item Znalezienie otoczki wklęsłej dla każdego ze zbiorów
 \end{enumerate}
 
 \subsection{Wczytywanie danych}
@@ -159,9 +159,14 @@ Na tym etapie zostają odrzucone zbiory puste (mogły powstać wskutek łączeni
 mniej niż $F$ punktów. Pozwala to odrzucić bardzo małe zbiory, które można zaniedbać przy odpowiednim
 poziomie szczegółowości.
 
-\subsection{Znalezienie otoczki wypukłej dla każdego ze zbiorów}
+\subsection{Znalezienie otoczki wklęsłej dla każdego ze zbiorów}
 
-Otoczką wypukłą zbioru punktów na płaszczyźnie nazywamy najmniejszy wielokąt taki, że wszystkie punkty z tego
+Otoczką wklęsła zbioru punktów na płaszczyźnie nazywamy najmniejszy wielokąt taki, że wszystkie punkty z tego
+zbioru leżą albo wewnątrz tego wielokąta, albo na jego krawędziach. Znalezienie tego wielokąta będzie polegało na
+stworzeniu najpierw otoczki wypukłej dla zadanego zbioru (przy pomocy triangulacji Delaunaya), a następnie takiego
+odfiltrowania krawędzi, aby stworzyć przybliżenie otoczki wklęsłej.
+
+Otoczką wypukłą zbioru punktów na płaszczyźnie nazywamy najmniejszy wielokąt wypukły taki, że wszystkie punkty z tego
 zbioru leżą albo wewnątrz tego wielokąta, albo na jego krawędziach \cite{website:OtoczkaTriangulacja}.
 Triangulacja Delaunaya jest podziałem otoczki wypukłej na trójkąty. W związku z tym, problem znalezienia otoczki
 można sprowadzić do problemu tworzenia triangulacji.
@@ -170,9 +175,9 @@ W ramach algorytmu szukamy otoczki zbioru punktów rzutowanych na powierzchnię 
 Zakładamy, iż każdy znaleziony zbiór jest reprezentacją jakiejś powierzchni płaskiej,
 w związku z tym po znalezieniu otoczki, można odrzucić wszystkie punkty znajdujące się wewnątrz.
 Będą one interpolowane poprzez punkty graniczne.
-Odrzucenie większości skutkuje zmniejszeniem ilości pamięci koniecznej do przechowywania informacji. Jednocześnie autor ma
-świadomość ograniczeń tego rozwiązania (wywołanych przez rzutowanie), jak np: upraszczanie ostrosłópów do płaskich powierzchni, jak przedstawiono
-na rysunku \ref{fig:uproszczenie_otoczki}.
+Odrzucenie większości punktów skutkuje zmniejszeniem ilości pamięci koniecznej do przechowywania informacji. Jednocześnie autor ma
+świadomość ograniczeń tego rozwiązania (wywołanych przez rzutowanie), jak np: upraszczanie ostrosłópów do płaskich powierzchni, co przedstawiono
+na rysunku \ref{fig:upraszczanie_otoczki}.
 
 \begin{figure}[h!]
     \centering
@@ -189,4 +194,81 @@ na rysunku \ref{fig:uproszczenie_otoczki}.
     \label{fig:upraszczanie_otoczki}
 \end{figure}
 
+Wykorzystanie triangluacji Delaunaya nie jest skomplikowane. Algorytm obliczający triangluacje
+dla zbioru punktów jest dostępny jako część pakietu \textit{scipy}. Dodatkowo wykorzystano pakiet \textit{shapely},
+który ułatwił zarządzanie figurami geometrycznymi. Cały algorytm (wykorzystujący wspomniane pakiety)
+prezentuje się następująco:
+
+\begin{lstlisting}
+# Źródło: http://blog.thehumangeo.com/2014/05/12/drawing-boundaries-in-python/
+def alpha_shape(points, alpha):
+   def add_edge(edges, edge_points, coords, i, j):
+        """
+        Add a line between the i-th and j-th points,
+        if not in the list already
+        """
+            if (i, j) in edges or (j, i) in edges:
+                # already added
+                return
+            edges.add( (i, j) )
+            edge_points.append(coords[ [i, j] ])
+
+    coords = np.array([point.x, point.y
+                       for point in points])
+    tri = Delaunay(coords)
+    edges = set()
+    edge_points = []
+    # loop over triangles:
+    # ia, ib, ic = indices of corner points of the
+    # triangle
+    for ia, ib, ic in tri.vertices:
+        pa = coords[ia]
+        pb = coords[ib]
+        pc = coords[ic]
+        # Lengths of sides of triangle
+        a = math.sqrt((pa[0]-pb[0])**2 + (pa[1]-pb[1])**2)
+        b = math.sqrt((pb[0]-pc[0])**2 + (pb[1]-pc[1])**2)
+        c = math.sqrt((pc[0]-pa[0])**2 + (pc[1]-pa[1])**2)
+        # Semiperimeter of triangle
+        s = (a + b + c)/2.0
+        # Area of triangle by Heron's formula
+        area = math.sqrt(s*(s-a)*(s-b)*(s-c))
+        circum_r = a*b*c/(4.0*area)
+        # Here's the radius filter.
+        #print circum_r
+        if circum_r < 1.0/alpha:
+            add_edge(edges, edge_points, coords, ia, ib)
+            add_edge(edges, edge_points, coords, ib, ic)
+            add_edge(edges, edge_points, coords, ic, ia)
+    m = geometry.MultiLineString(edge_points)
+    triangles = list(polygonize(m))
+    return cascaded_union(triangles), edge_points 
+\end{lstlisting}
+
+Pierwszym etapem tworzenia otoczki wypukłej jest zrzutowanie danych na powierzchnię dwuwymiarową (linie 14-15).
+Następnie zostaje utworzona triangulaja Delaunay. Potem następuje przejście po wszystkich trójkątach nowo
+utworzonej siatki i dla każdego z nich policzenie promienia okręgu opisanego na tym trójkącie (linie 22-34). Dzięki
+parametrowi \textit{alpha} możliwe jest odrzucenie części trójkątów (tych, dla których promień okręgu opisanego jest większy niż $1/alhpa$).
+Powoduje to, że otoczka z wypukłej staje się wklęsłą - bardziej odpowiada kształtowi rzeczywistych obiektów.
+Ostatnim etapem jest utworzenie obiektu typu \textit{shapely.geometry.polygon.Polygon}. Obiekt ten posiada w sobie informację
+o punktach granicznych, tworzących otoczenie. Przykładowe efekty działania funkcji \textit{alpha\_shape} dla różnych wartości 
+parametru \textit{alpha} przedstawiono na rysunku \ref{fig:triangulacja_alpha}.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\linewidth]{img/triangulacja1.png}
+        \caption {alpha = 0.4}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\linewidth]{img/triangulacja2.png}
+        \caption {alpha = 0.8}
+    \end{subfigure}%
+	\begin{subfigure}[b]{0.33\textwidth}
+		\includegraphics[width=\linewidth]{img/triangulacja3.png}
+		\caption {alpha = 1.6}
+	\end{subfigure}
+    \caption{Efekty metody alpha\_shape przy różnych współczynnikach alpha}
+    \label{fig:triangulacja_alpha}
+\end{figure}
 
