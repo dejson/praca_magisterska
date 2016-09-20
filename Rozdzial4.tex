@@ -5,7 +5,103 @@ dostęp do nich poprzez Internet wymaga relatywnie długiego czasu (rzędu kilku
 iż niemożliwym jest zbudowanie systemu który w czasie rzeczywistym przedstawiałby te dane w sposób podobny
 do aktualnie dostępnych w Internecie map, jak Google Maps. Aby zaradzić temu problemowi, stworzono dwa algorytmy.
 Ich celem było takie przetworzenie danych wejsciowych, aby zmiejszyć ich objętość jednoczesnie nie tracąc zawartych w nich informacji.
-W niniejszym rozdziale znajdują się opisy tych algorytmów, opis przekształcania ich do formatu shapefile w celu udostępnienia
+W niniejszym rozdziale znajdują się opisy tych algorytmów oraz opis przekształcania ich do formatu shapefile w celu udostępnienia
 poprzez GeoServer.
 
 \section{Algorytm Naiwny}
+
+W celu szybkiego otrzymania wyników zdecydowano się na stworzenie prostego (naiwnego) algorytmu. Opierał się on na następujących założeniach:
+\begin{itemize}
+    \item Dane wejściowe posiadają wysoką rozdzielczość (rzędu kilkudziesieciu punktów na metr)
+    \item Punkty znajdujące się blisko siebie (tzn. odległość $d$ ze wzoru \ref{eq:odleglosc_euklidesowa} mniejsza niż stała $C$), są fragmentem tej samej powierzchni
+\end{itemize}
+
+\noindent Algorytm ten składa się z następujących faz:
+\begin{enumerate}
+    \item Wczytywanie danych
+    \item Wstępne sortowanie
+    \item Przypisywanie do zbiorów
+    \item Filtracja zbiorów
+    \item Znalezienie otoczenia dla każdego ze zbiorów
+\end{enumerate}
+
+\subsection{Wczytywanie danych}
+
+Dzięki wykorzystaniu biblioteki liblas \cite{website:libLASPython}, odczytywanie danych z plików w formacie .las jest niezwykle proste.
+Całość ogranicza się do zaimportowania odpowiedniej klasy i wykorzystania prostej pętli for, jak przedstawiono
+w algorytmie \ref{lis:wczytanie_danych}
+
+\begin{lstlisting}[frame=L, language=python, caption={Wczytywanie danych}, label={lis:wczytanie_danych}]
+from liblas import file
+
+def read_from_file(name):
+    points = []
+    f = file.File(name)
+    for p in f:
+        points.append(MyPoint(p.x, p.y, p.z, classification=p.classification))
+    f.close()
+
+    return points
+\end{lstlisting}
+
+Punkty są przechowywane w pamięci jako obiekty klasy \textit{MyPoint}. W ramach takiego obiektu przechowywane są informacje dotyczące
+współrzędnych punktu, przynależności do zbioru oraz klasyfikacji. Obiekt może też określić swoją odległość od innego punktu
+za pomocą metody \textit{get\_distance} oraz określić czy dany punkt jest jego sąsiadem przy użyciu metody \textit{is\_neighbour}.
+
+\subsection{Wstępne sortowanie}
+
+Jak stwierdzono we wstępie, jednym z założeń jest, iż punkty znajdujące się blisko siebie są fragmentem tej samej powierzchni.
+Oznacza to konieczność porównywania ze sobą punktów w systemie każdy z każdym, aby stwierdzić, które z nich należą do tego samego zbioru.
+Jedakże takie podejście oznacza złożoność obliczeniową rzędu $O(N^2)$, która,  przy ilości punktów wynoszącą kilka milionów, jest niedopuszczalna.
+Aby przyspieszyć obliczenia, zdecydowano się na wstępne posortowanie punktów, aby możliwe było porównywanie danego punktu tylko z punktami z 
+jego najbliższego otoczenia.
+
+Sortowanie polega na umieszczeniu punktów w macierzy $[M x N]$, której wymiary odpowiadają różnicy między największa i najmniejszą wartością
+współrzędnych $x, y$ punktu $p$ ze zbioru punktów wejściowych $P$:
+\begin{eqnarray}
+    M = max(p.x) - min(p.x) \bigvee p \in P \\
+    N = max(p.y) - min(p.y) \bigvee p \in P
+\end{eqnarray}
+
+\noindent Punkty umieszczane są w odpowiadjącym ich współrzędnym komórkach macierzy (algorytm \ref{lis:sortowanie_punktow}).
+
+\begin{lstlisting}[frame=Lm language=python, caption={Sortowanie punktów}, label={lis:sortowanie_punktow}]
+sorted_points = [[ [] for _ in range(0, N)] for _ in range(0, M)]
+
+for p in P:
+    x = int(math.floor(p.x - xmin))
+    y = int(math.floor(p.y - ymin))
+    sorted_points[x][y].append(p)
+
+\end{lstlisting}
+
+W uproszczeniu można powiedzieć, iż algorytm ten powoduje nałożenie siatki na chmurę punktów, co zostało zobrazowane na rysunku \ref{fig:sortowanie_punktow}
+
+\begin{figure}[h!]
+	\centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\linewidth]{img/sortowanie_punktow1.png}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\linewidth]{img/sortowanie_punktow2.png}
+    \end{subfigure}%
+    \caption{Sortowanie punktów w zbiorze}
+    \label{fig:sortowanie_punktow}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NA PÓŹNIEJ
+
+\noindent Odległość $d$ między punktami $A, B$ jest określona przez metrykę euklidesową:
+\begin{equation} \label{eq:odleglosc_euklidesowa_ogolna}
+    d(A,B) = \sqrt{\sum\limits_{i=1}^n((x_{iA}-x_{iB})^2)}
+\end{equation}
+
+\noindent Gdzie $n$ określa liczbę wymiarów. Dla przypadku trójwymiarowego, równanie \ref{eq:odleglosc_euklidesowa_ogolna} można uprościć do:
+\begin{equation} \label{eq:odleglosc_euklidesowa}
+    d(A,B) = \sqrt{(x_A - x_B)^2 + (y_A - y_B)^2 + (z_A - z_B)^2}
+\end{equation}
+
+\noindent Gdzie $x, y, z$ są kolejnymi współrzędymi punktu.
+
+
