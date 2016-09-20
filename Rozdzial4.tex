@@ -102,7 +102,6 @@ def find_neighbour(point, neighbour_points, sets):
     if point.point_set is None:
         point.point_set = len(sets)
         sets.append([point])
-
     for p in neighbour_points:
         if point.is_neighbour(p):
             if p.point_set is None:
@@ -130,7 +129,8 @@ Określa się to poprzez obliczenie odległości $d$ między nimi. Odległość 
 \end{equation}
 
 Gdzie $x, y, z$ są kolejnymi współrzędymi punktu. Po obliczeniu odległości $d$ na podstawie równania \ref{eq:odleglosc_euklidesowa}
-jest sprawdzane, czy jest ona mniejsza niż stała $C$. Jeżeli tak, uznaje się że punkty są sąsiadami. Cały proces został zilustrowany na
+jest sprawdzane, czy jest ona mniejsza niż stała $C$\footnote{Dodatkowo bierze się pod uwagę, czy punkty są tak samo sklasyfikowane.
+Jeśli tak, to wtedy $C = C*2$.}. Jeżeli tak, uznaje się że punkty są sąsiadami. Cały proces został zilustrowany na
 rysunku \ref{fig:sprawdzanie_sasiedztwa}
 
 \begin{figure}[h!]
