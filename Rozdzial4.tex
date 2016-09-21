@@ -291,4 +291,63 @@ opierając się na poprzednim. W stosunku do algorytmu naiwnego poczyniono nast�
     \item Znalezienie otoczki wklęsłej dla każdego ze zbiorów
 \end{enumerate}
 
-Zmieniony został sposób przypisywania do zbiorów. 
+Zmieniony został sposób przypisywania do zbiorów. Na początku wyszukiwane są wszystkie zbiory będące w pobliżu badanego punktu.
+Jeżeli nie znaleziono żadnego, tworzy się nowy zbiór zawierający tylko badany punkt.
+Jeśli znaleziono jeden zbiór, przypisywano badany punkt do niego.
+W syutuacji kiedy znaleziono więcej niż jeden zbiór następuje ważenie. Bierze ono pod uwagę odległość punktu od najbliższego
+punktu należącego do zbioru oraz różnicę między średnią wysokością punktów w zbiorze a wysokością badanego punktu podzieloną
+przez odchylenie standardowe tego zbioru. Algorytm został przedstawiony na rysunku \ref{fig:algorytm_iteracyjny}. W listingu
+\ref{lis:wazenie} przedstawiono jak przebiega faza ważenia.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\linewidth]{img/algorytm_iteracyjny.png}
+    \caption{Pętla algorytmu iteracyjnego}
+    \label{fig:algorytm_iteracyjny}
+\end{figure}
+
+\begin{lstlisting}[frame=L, language=python, label={lis:wazenie}, caption={Ważenie punktów w algorytmie iteracyjnym}]
+# calculate which set suits best
+max_score = 0
+for set_dict in neighbour_sets:
+    s = set_dict['set']
+    if s.sd() > 0:
+        score = abs(s.average() - point.z) / s.sd()
+    elif s.sd() == 0.0:
+        score = abs(s.average() - point.z) / 0.00001
+    set_dict['score'] = score
+    if score > max_score:
+        max_score = score
+
+max_abs_score = 0
+target = None
+for set_dict in neighbour_sets:
+    if max_score:
+        set_dict['score'] = (set_dict['score'] / max_score) / 2.0 + set_dict['distance']
+    else:
+        set_dict['score'] = set_dict['distance']
+    set_dict['score'] = 1 - set_dict['score']
+
+    if set_dict['score'] > max_abs_score:
+        target = set_dict
+        max_abs_score = set_dict['score']
+
+if point.point_set:
+    point.point_set.delete_point(point)
+point.point_set = target['set']
+target['set'].append(point)
+\end{lstlisting}
+
+Fazę ważenia można podzielić na dwa etapy. W pierwszym z nich liczone jest o ile odchyleń standardowych
+wartość wysokości danego punktu odbiego od średniej ze zbioru (linie 5-6). Wartość ta stanowi wstępną wartość punktową, jakią uzyskał dany zbiór.
+Jeżeli dla danego zbioru odchylenie standardowe wynosi 0\footnote{Będzie tak, jeżeli w zbiorze będzie tylko jeden punkt,
+lub gdy wszystkie punkty ze zbioru mają taką samą wysokość.},
+wtedy na potrzeby obliczeń przyjmuje się iż odchylenie standardowe jest bardzo małą liczbą ($10^{-5}$).
+
+W drugim etapie następuje normalizacja liczby punktów do przedziału $<0; 0,5>$ poprzez podzielenie wartości punktowej
+przez maksymalny wynik uzyskany przez jeden ze zbiorów pomnożonej przez 2. Następnie do znormalizowanego wyniku punktowego
+dodaje się odległość\footnote{Odległość jest znormalizowana do przedziału $<0; 0,5>$} 
+między badanym punktem a najbliższym punktem ze zbioru (linie 16-17).
+Jeżeli maksymlna wartośc punktowa uzyskana w poprzednim etapie wynosi 0, wtedy na potrzeby ostatecznej punktacji
+bierze się pod uwagę tylko odległość. Ostateczny wynik uzyskuje się odejmując 1 od uprzednio uzyskanego wyniku (linia 20).
+Na końcu przypisuje się punkt do zbioru, który uzyskał największą ilość punktów.
