@@ -272,3 +272,23 @@ parametru \textit{alpha} przedstawiono na rysunku \ref{fig:triangulacja_alpha}.
     \label{fig:triangulacja_alpha}
 \end{figure}
 
+\section{Algorytm iteracyjny}
+
+Algorytm naiwny dał nadspodziewanie dobre wyniki (\autoref{chap:wyniki}), jednakże posiada jedną wadę:
+ciężko poprawić jakość wyników. W związku z tym pojawiła się idea, aby stworzyć nowy algorytm, częściowo
+opierając się na poprzednim. W stosunku do algorytmu naiwnego poczyniono następujące zmiany:
+\begin{itemize}
+    \item Algorytm ma w sposób iteracyjny poprawiać dokładność wyników
+    \item Algorytm ma brać pod uwagę też inne czynniki niż odległość punktów od siebie
+\end{itemize}
+
+\noindent Kolejne kroki algorytmu pozostały takie same, dla przypomnienia:
+\begin{enumerate}
+    \item Wczytywanie danych
+    \item Wstępne sortowanie
+    \item Przypisywanie do zbiorów
+    \item Filtracja zbiorów
+    \item Znalezienie otoczki wklęsłej dla każdego ze zbiorów
+\end{enumerate}
+
+Zmieniony został sposób przypisywania do zbiorów. 
