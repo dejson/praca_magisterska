@@ -351,3 +351,51 @@ między badanym punktem a najbliższym punktem ze zbioru (linie 16-17).
 Jeżeli maksymlna wartośc punktowa uzyskana w poprzednim etapie wynosi 0, wtedy na potrzeby ostatecznej punktacji
 bierze się pod uwagę tylko odległość. Ostateczny wynik uzyskuje się odejmując 1 od uprzednio uzyskanego wyniku (linia 20).
 Na końcu przypisuje się punkt do zbioru, który uzyskał największą ilość punktów.
+
+\section{Przekształcanie do formatu shapefile}
+
+Po podziale surowych danych na zbiory (będące w istocie wielokątami), konieczne jest
+przekształcenie ich do formatu shapefile. Dzięki temu możliwe będzie wyśwetlanie wyników
+za pomocą aplikacji implementujących standardy OGC, jak np: GeoServer.
+
+Do kowersji danych wykorzystano pakiet \textit{osgeo}. Jest to pakiet który umożliwia
+wykorzystywanie tzw. bilbioteki GDAL (Geospatial Data Abstraction Library). Pozwala ona
+na tworzenie i manipulowanie obiektami geograficznymi, takimi jak punkty, linie i wielokąty.
+Dodatkowo posiada wsparcie dla wielu różnych projekcji geograficznych. Wykorzystanie tej
+biblioteki do konwersji przedstawiono na listingu \ref{lis:konwersja}.
+
+\begin{lstlisting}[frame=L, language=python, caption={Konwersja danych do formatu SHP}, label={lis:konwersja}]
+import osgeo.ogr as ogr
+import osgeo.osr as osr
+
+spatialReference = osr.SpatialReference()
+spatialReference.ImportFromEPSG(2180)
+
+driver = ogr.GetDriverByName('ESRI Shapefile')
+shapeData = driver.CreateDataSource('data.shp')
+
+layer = shapeData.CreateLayer('Layer1', spatialReference, ogr.wkbPolygon)
+
+for surface in surface_list:
+	ring = ogr.Geometry(ogr.wkbLinearRing)
+	for x, y, z in zip(points[0], points[1], points[2]):
+	    ring.AddPoint(x, y, z)
+	poly = ogr.Geometry(ogr.wkbPolygon)
+	poly.AddGeometry(ring)
+	result.append(poly)
+	
+	feature = ogr.Feature(layer.GetLayerDefn())
+	feature.SetGeometry(poly)
+	layer.CreateFeature(feature)
+	feature.Destroy()
+
+shapeData.Destroy()
+
+\end{lstlisting}
+
+Na początku tworzona jest georeferencja w formacie EPSG 2180 (linie 4-5). Jest to georeferencja w której zostały
+zebrane wejściowe dane lidar. Następnie tworzony jest sterownik, w tym wypadku do tworzenia plików .SHP, oraz otwierany
+jest deskryptor na plik wynikowy (linie 7-8). Potem tworzona jest nowa warstwa, umieszczana we wcześniej zadeklarowanej
+georeferencji. Dodatkowo deklarowane jest, iż warstwa ta zawierać będzie wielokąty (linia 10). W pętli for przechodzimy po kolei
+przez wszystkie punkty tworzące wszystkie wielokąty i dodajemy je do stworzonej warstwy (linie 12-23). Na końcu niszczony jest
+deskryptor na plik, co powoduje zapisanie przetworzonych informacji na dysku (linia 25).
