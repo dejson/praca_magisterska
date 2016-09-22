@@ -205,4 +205,54 @@ przyległymi drzewami.
 
 Po analizie z wykorzystaniem algorytmu naiwnego przetestowano algorytm iteracyjny.
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/wynik_iter1.png}
+    \caption{Efekt działania algorytmu iteracyjnego (1 iteracja)}
+    \label{fig:wynik_iteracyjny}
+\end{figure}
 
+Jak widać na rysunku \ref{fig:wynik_iteracyjny} po pierwszej iteracji otrzymane wyniki
+znacznie odbiegają od tego, co faktycznie znajduje się na danych testowych. Jednakże
+było to spodziewane po eksperymentach przeprowadzonyc na danych generowanych. Dlatego przeprowadzono
+wiecej iteracji.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.5\linewidth}
+        \includegraphics[width=\linewidth]{img/wynik_iter2.png}
+        \caption{Efekt działania algorytmu iteracyjnego (2 iteracja)}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.5\linewidth}
+        \includegraphics[width=\linewidth]{img/wynik_iter3.png}
+        \caption{Efekt działania algorytmu iteracyjnego (3 iteracja)}
+    \end{subfigure}%
+    \caption{Wyniki kolejnych iteracji}
+    \source{http://mapy.geoportal.gov.pl/wss/service/img/guest/ORTO/MapServer/WMSServer}
+    \label{fig:wynik_naiwny_las}
+\end{figure}
+
+Wraz z kolejnymi iteracjami można zaobserwować pewien postęp (przy trzeciej iteracji
+widoczne są nowe obszary), jednakże postęp ten jest niezwykle powolny. Dodając do tego
+czasy wykonywania się kolejnych iteracji, przedstawione w tabeli \ref{tab:iter_czasy},
+stwierdzono, że algorytm ten nie nadaje się do analizy tak dużych plików.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|p{0.5\linewidth}|p{0.5\linewidth}|}
+        \hline
+		1 iteracja & 15 minut \\
+		\hline
+		2 iteracje & 35 minut \\
+		\hline
+		3 iteracje & 1 godzina 15 minut \\
+		\hline
+    \end{tabular}
+    \caption{Czasy wykonywania kolejnych iteracji}
+    \label{tab:iter_czasy}
+\end{table}
+
+
+Ostatnim testem było połączenie obu rozwiązań, tzn. najpierw wyszukaniem zbiorów
+przy wykorzystaniu algorytmu naiwnego a następnie stopniowym ulepszaniem jego wyniku
+poprzez iteracje.
