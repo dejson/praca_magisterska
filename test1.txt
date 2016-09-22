@@ -1,0 +1,19 @@
+Algorytm naiwny: 1.3756210804
+Pierwsza iteracja: 16.3186588287
+Iteracyjny: 295.88685894
+
+Algorytm naiwny: 1.47863602638
+Pierwsza iteracja: 18.8639588356
+Iteracyjny: 318.113523006
+
+Algorytm naiwny: 1.38323807716
+Pierwsza iteracja: 10.3736689091
+Iteracyjny: 180.850491047
+
+Algorytm naiwny: 1.3731648922
+Pierwsza iteracja: 16.1445069313
+Iteracyjny: 287.216510057
+
+Algorytm naiwny: 1.38446807861
+Pierwsza iteracja: 15.657834053
+Iteracyjny: 283.34939599
