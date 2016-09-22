@@ -73,7 +73,7 @@ Przez kolor czerwony zostały oznaczone punkty dla których $z > 1$.
 
 Jak widać na rysunku \ref{fig:test1} oba algorytmy poprawnie wykryły dwie powierzchnie. Co ciekawe,
 algorytm iteracyjny już po pierwszej iteracji poprawnie zakwalifikował punkty do dwóch zbiorów. Niestety, jest to
-dziełem przypadku, co pokazano na rysunku \ref{fig:test2}
+dziełem przypadku, co zostało wykazane przez kolejny test.
 
 \begin{figure}[h!]
     \centering
@@ -119,5 +119,90 @@ poprawiania wyników wraz z kolejnymi iteracjami. Porównano także czasy wykony
     \label{tab:czasy1}
 \end{table}
 
+Podsumowując - oba algorytmy dają poprawne wyniki. Algorytm naiwny jest ponad 10 razy szybszy w optymistycznym,
+i nawet 195 razy szybszy w pesymistycznym przypadku niż algorytm iteracyjny. Z drugiej jednak strony, algorytm
+naiwny nie ma możliwości poprawy wyników wraz z kolejnymi iteracjami, co może mieć krytyczne znaczenie przy
+analizowaniu danych rzeczywistych.
+
+\section{Testy na danych rzeczywistych}
+
+Po sprawdzeniu poprawności działania obu algorytmów przystopiono do testów na prawdziwych danych.
+Dane te zostały zebrane dnia 28 sierpnia 2012 roku w ramach programu ISOK. Obejmują swoim zasięgiem okolice
+gmachu Elektroniki gmachu Oceanotechniki i Okrętownictwa oraz gmachu Mechaniki Politechniki Gdańskiej.
+Dokładny zasięg danych został przedstawiony na rysunku \ref{fig:dane_testowe}.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.5\linewidth}
+		\includegraphics[width=\linewidth]{img/dane_testowe1.png}
+        \caption{Dane testowe}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.5\linewidth}
+        \includegraphics[width=\linewidth]{img/dane_testowe2.png}
+        \caption{Obszar danych testowych zaznaczony na zdjęciu}
+    \end{subfigure}%
+    \caption{Obszar objęty przez dane testowy}
+    \source{http://mapy.geoportal.gov.pl/wss/service/img/guest/ORTO/MapServer/WMSServer}
+    \label{fig:dane_testowe}
+\end{figure}
+
+Dane zaprezentowane na rysunku \ref{fig:dane_testowe} wykorzystano jako dane wejściowe
+dla przygotowanych algorytmów. Najpierw sprawdzono efekt działania algorytmu naiwnego.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{img/wynik_naiwny.png}
+    \caption{Efekt działania algorytmu naiwnego}
+    \label{fig:wynik_naiwny}
+\end{figure}
+
+Na rysunku \ref{fig:wynik_naiwny} przedstawiono efekty działania algorytmu naiwnego.
+Na pierwszy rzut oka wydają się być poprawne. Widać wyraźnie zarysowany kształt budynku
+nowej elektroniki. Niestety istnieje też wiele źle zidentyfikowanych fragmentów. Przede
+wszystkim są to drzewa, a także nie wyjaśnione zakłócenia widoczne u góry rysunku.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.5\linewidth}
+        \includegraphics[width=\linewidth]{img/wynik_naiwny_eti.png}
+        \caption{Wynik działania algorytmu}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.5\linewidth}
+        \includegraphics[width=\linewidth]{img/wynik_naiwny_eti_real.png}
+        \caption{Wynik po nałożeniu na zdjęcie}
+    \end{subfigure}%
+    \caption{Zbliżenie na gmach ETI}
+    \source{http://mapy.geoportal.gov.pl/wss/service/img/guest/ORTO/MapServer/WMSServer}
+    \label{fig:wynik_naiwny_eti}
+\end{figure}
+
+Na rysunku \ref{fig:wynik_naiwny_eti} przedstawiono wyniki działania algorytmu naiwnego po
+zbliżeniu na obszar wokół nowego gmachu ETI. Widać, że obrysy: budynku OiO (górna część zdjęcia)
+oraz baraków (prawa strona zdjęcia) zostały obliczone idealnie. Obrys gmachu nowego ETI także ma
+odpowiedni kształt, jednakże wydaje się być nieco przesunięty względem faktycznego położenia budynku.
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.5\linewidth}
+        \includegraphics[width=\linewidth]{img/wynik_naiwny_las.png}
+        \caption{Wynik działania algorytmu}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.5\linewidth}
+        \includegraphics[width=\linewidth]{img/wynik_naiwny_las_real.png}
+        \caption{Wynik po nałożeniu na zdjęcie}
+    \end{subfigure}%
+    \caption{Zbliżenie na tereny zalesione}
+    \source{http://mapy.geoportal.gov.pl/wss/service/img/guest/ORTO/MapServer/WMSServer}
+    \label{fig:wynik_naiwny_las}
+\end{figure}
+
+Na rysunku \ref{fig:wynik_naiwny_las} przedstawiono wynik działania algorytmu naiwnego po
+zbliżeniu na obszar zalesiony. Niestety w takim środowisku program radzi sobie znacznie gorzej.
+Wykrył bardzo duży obszar leśny jako jedną powierzchnię, w której znajdują się inne, mniejsze.
+Jednocześnie widoczne na zdjęciu boisko zostało zakwalifikowane do jednego zbioru razem z 
+przyległymi drzewami.
+
+Po analizie z wykorzystaniem algorytmu naiwnego przetestowano algorytm iteracyjny.
 
 

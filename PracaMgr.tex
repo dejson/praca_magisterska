@@ -90,6 +90,13 @@
 %Źródła w podpisach
 \newcommand{\source}[1]{\vspace{-12pt} \caption*{Źródło: {#1}} }
 
+%%%%%%%%%%%%%%%%%%%%%%
+%Zamiana chapter na rozdział
+\addto\extraspolish{%
+    \renewcommand{\chapterautorefname}{rozdziale}%
+    \renewcommand{\sectionautorefname}{podrozdziale}%
+    \renewcommand{\subsectionautorefname}{sekcja}%
+}
 \begin{document}
 
 \include{Abstrakt_pl}
