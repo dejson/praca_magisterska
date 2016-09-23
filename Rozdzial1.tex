@@ -26,6 +26,32 @@ Widać wyraźnie, iż diametralnie rośnie ilość danych geograficznych jakie s
 pomiarowych (satelity, samoloty) ale też sama ilość informacji zawarta na jednym ujęciu. Stawia to nowe wyzwania przed badaczami,
 którzy te ogromne ilości danych muszą przetworzyć i udostępnić w przyjazny sposób dla użytkownika.
 
+Szczególnie wymagające jest udostępnianie danych LiDAR w wysokiej rozdzielczości ze względu na ich rozmiar. Plik zawierający
+w sobie dane dotyczące obszaru wielkości około $0,35km^2$ waży około 180MB. Przesłanie takiego pliku przez sieć Internet wymaga
+czasu kliku, czasem nawet kilkunastu sekund. Stąd też pojawia się idea, aby dane te uprościć, a tym samym zmniejszyć czas potrzebny
+na ich przesłanie przez sieć
+
 \section{Cele i teza pracy}
 
+Głównym celem pracy jest stwierdzenie, czy możliwe jest stworzenie systemu który umożliwi dostęp do danych zebranych za pomocą
+skanowania laserowego w czasie rzeczywistym. Aby potwierdzić lub zaprzeczyć tezie zostaną zaimplementowane różne algorytmy, których
+zadaniem będzie możliwie bezstratna kompresja danych LiDAR. Kompresja będzie polegać na odnajdowaniu specyficznych grup punków, które
+w rzeczywistości stanowią fragment tej samej powierzchni. Po zalezieniu otoczki takiej powierzchni, możliwe będzie odrzucenie punktów
+znajdujących się w jej środku i pozostawienie tylko wielokąta o kształcie tejże powierzchni, tym samym zmniejszając ilość danych
+koniecznych do przesyłania
+
 \section{Przegląd rozdziałów}
+
+W rozdziale drugim zostały omówione sposoby pozyskiwania danych LiDAR oraz formaty plików w jakich przechowywuje się dane geograficzne.
+Następnie omówiono rózne algorytmy stosowane w celu przetwarzania chmury punktów.
+
+W rozdziale trzecim omówiono technologie stosowane podczas przesyłania danych geograficznych przez sieć. Rozpoczynając od protokołów,
+poprzez usługi serwerowe dostarczające mapy kończąc na bibliotekach klienckich pozwalających przeglądać te dane
+
+W rozdziale czwartym przedstawiono dwa zaimplementowane algorytmy. Omówiono ich zasadę działania oraz wskazano na różnicę między nimi.
+Dodatkowo opisano w jaki sposób przekształca się dane do formatu SHP.
+
+W rozdziale piątym przedstawiono wyniki eksperymentów przeprowadzonych zarówno na spreparowanych danych jak i na pochodzących z prawdziwego
+skanowania laserowego. Porównano jakość uzyskanych wyników a także czasy przetwarzania.
+
+W rozdziale szóstym przedstawiono ostateczne wnioski z pracy.
