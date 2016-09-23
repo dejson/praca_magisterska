@@ -1,0 +1,48 @@
+\chapter{Podsumowanie}
+
+Dane LiDAR wysokiej rozdzielczości stanowią bogate źródło informacji.
+Ich zbieranie jest mniej czasochłonne, niż mogłoby się wydawać - w ramach projektu
+ISOK zeskanowano powierzchnię niemalże całej Polski. Na podstawie tych danych można
+tworzyć modele 3D terenu, przydatne przy planowaniu przestrzennym czy do budowania
+modeli powodziowych. Nie można jednak pominąć pewnych wad technologii LiDAR. Przede
+wszystkim, dane zdobywane poprzez skanowanie laserowe są danymi zdobywanymi na dany
+dzień, co wprowadza konieczność ich uaktualniania. Drugą wadą jest ilość miejsca jaką
+zajmują dane. Sam plik testowy wykorzystywane do eksperymentów ważył prawie 180MB.
+Dla powierzchni całej Polski waga wszystkich danych wynosi 3,5TB. Stanowi to znaczną
+trudność przy przesyłaniu takich danych przez sieć
+
+W ramach pracy wykazano, że możliwa jest taka zamiana surowych danych LiDAR, aby
+możliwe było ich przesyłanie bez dużych strat informacji. Dane opisujące badany 
+obszar na terenie Politechniki Gdańskiej udało się zmniejszyć 180-krotnie, do
+wielkości rzędu 1MB. Ponadto, zamieniono je na popularny format SHP, który jest
+obsługiwany przez większość oprogramowań serwerowych dla systemów GIS, takich
+jak opisywane w tej pracy GeoServer i MapServer. Pozwala to na łatwe udostępnianie
+danych poprzez sieć, także z wykorzystaniem protokołów OGC. Dzięki temu
+możliwe jest budowanie własnych aplikacji w oparciu o przekonwertowane dane LiDAR.
+Jednocześnie sam algorytm wykonuje się stosunkowo szybko (kilkanaście minut). Pozwala
+to na cykliczne zbieranie danych i przetwarzanie ich, co podniesie aktualność prezentowanych
+danych.
+
+Oczywiście przedstawione w pracy algorytmy i ich realizację ciężko uznać za gotowy
+system. Stanowią one raczej swoisty dowód, że stworzenie systemu do udostępniania
+danych LiDAR jest możliwe. Wyniki dostarczane przez testowane algorytmy albo nie
+umożliwiają jakiekolwiek analizy (algorytm iteracyjny) albo stanowią pewne uproszczenie
+dla danych oryginalnych (algorytm naiwny). Uproszczenia te wynikają zarówno z powodu
+efektu wypłaszczania (\autoref{chap:upraszczanie}), jak i z niedokładnośći samej
+klasyfikacji. Jednakże dla pewnego poziomu szczegółowości, można zaakcpetować te
+niedokładności. W ostatecznym systemie dostarczającym dane LiDAR należałoby wykorzystać
+zaproponowane algorytmy (lub podobne) do zbudowania modelu uproszczonego, który
+byłby wykorzystany przy małym poziomie szczegółowości (dużym oddaleniu od mapy).
+Przy dużym poziomie szczegółowości należałoby przesłać do użytkownika oryginalne
+dane LiDAR. Moment w którym nastąpi przejscie z modelu uproszczonego na oryginalne
+dane powinien być uzależniony od wielkości obszaru, o który prosi użytkownik. Jeżeli
+dla zadanej powierzchni możliwe jest przesłanie surowych danych LiDAR w krótkim czasie,
+to właśnie te dane należy przesłać. W przeciwnym wypadku konieczne jest zastosowanie
+uproszczonego modelu.
+
+Dalsze pracę nad zagadnieniem udostępniania danych LiDAR powinny skupić się na poprawie
+wydajności algorytmu iteracyjnego. Wykazuje on tendencję do poprawiania wyników, lecz
+niemożliwe było sprawdzenie tego w pełni przez zbyt długi czas wykonywania. Dodatkowo
+można rozważyć wykorzystanie innych metryk niż średnia wysokość punktów w zbiorze
+i odchylenie standardowe od wysokości. Być może pozwoliłoby to na ograniczenie liczby
+koniecznych iteracji a tym samym - zmniejszenie czasu potrzebnego na przetworzenie danych.
