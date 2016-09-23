@@ -255,4 +255,24 @@ stwierdzono, że algorytm ten nie nadaje się do analizy tak dużych plików.
 
 Ostatnim testem było połączenie obu rozwiązań, tzn. najpierw wyszukaniem zbiorów
 przy wykorzystaniu algorytmu naiwnego a następnie stopniowym ulepszaniem jego wyniku
-poprzez iteracje.
+poprzez iteracje. Niestety takie podejście okazało się być zbyt czasochłonne 1 iteracja
+trwała ponad godzinę, a nie zauważono znacznej poprawy w wynikach. W związku z powyższym
+za najlepszy wynik uznano ten uzyskany przez algorytm naiwny.
+
+\section{Omówienie}
+
+Jak pokazały eksperymenty, żadna z metod nie gwarantuje idealnego wykrywania powierzchni. Algorytm
+uproszczony ma problemy z prawidłowym wykrywaniem drzew oraz innych struktur charakteryzujących się
+nieregularną powierzchnią. Jego wykorzystywanie będzie oznaczać kompresję stratną danych wejściowych.
+
+Algorytm iteracyjny nie dał żadnych prawidłowych wyników. Co prawda dla danych sztucznie wygenerowanych
+był w stanie prawidłow sklasyfikować dane do dwóch różnych powierzchni, lecz przy próbie wykorzystania
+danych prawdziwych po kliku iteracjach wynik jest daleki od tego, co oferuje algorytm naiwny. Mozna
+domniemywać, że za ten stan rzeczy odpowiedzialna jest niedostateczna ilość iteracji. Niestety, wraz
+z każdą iteracją rośnie też średni czas jej obliczania. Sprawia to, że algorytm ten w zaproponowanej formie
+jest bezużyteczny do analizy danych LiDAR.
+
+Ostatecznie zdecydowane, że to algorytm naiwny daje akceptowalne wyniki. Rezultat działania tego algorytmu,
+po przekonwertowaniu do formatu SHP waży poniżej 1MB, co oznacza zmniejszenie wagi danych niemalże 180 razy.
+Pliki takiej wielkości można szybko przesyłać poprzez sieć. Pokazuje to, że algorytm naiwny może znaleźć
+zatosowanie przy tworzenie systemu web-GIS do udostępniania danych LiDAR.
