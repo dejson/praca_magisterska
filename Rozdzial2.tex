@@ -1,4 +1,4 @@
-\chapter{Algorytmy przetwarzania chmur punktów w systemach GIS}
+\chapter{Opis wybranych algorytmów do przetwarzania chmur punktów w systemach GIS}
 
 \section{Pozyskiwanie danych}
 Do pozyskiwania danych wykorzystuje się technologię LIDAR. Jest to nowoczesna metoda pozyskiwania informacji dotyczących wysokości terenu \cite{Marmol2003}. Efektem jej działania jest tzw “chmura punktów”, która uwzględnia wysokość nie tylko powierzchni ziemi, ale również drzew, budynków itp.
@@ -20,17 +20,13 @@ informacje takie jak \cite{chen2014}:
 \includegraphics[width=0.9\textwidth]{img/LIDAR.jpg}
 \caption{Schematycznie przedstawiony nalot podczas zbierania danych LIDAR}
 \label{fig:lidar}
+    \source{http://antyweb.pl/wp-content/uploads/2015/03/LiDAR-Escaneo-Ejemplo.jpg}
 \end{figure}
 
 Na rysunku \ref{fig:lidar} przedstawiono w sposób schematyczny jak przebiega pobieranie danych. Samolot podczas nalotu pobiera dane wzdłuż pewnego odcinka prostopadłego do kierunku lotu, z których następnie powstaje chmura punktów, której wizualizację również przedstawiono na rysunku.
 
-\section{Opis wybranych algorytmów}
+\section{Triangulacja Delaunay'a}
 
-W poniższym rozdziale zostaną opisane istniejące algorytmy przetwarzania danych w postaci chmury punktów w systemach GIS.
-
-\subsection{Triangulacja Delaunay'a}
-
-\subsubsection{Definicja}
 Triangulacja Delaunay'a jest reprezentacją chmury punktów w postaci nieregularnej siatki trójkątów TIN (z ang. Triangulated Irregular Network).
 Jej cechą szczególną jest fakt, iż żaden z punktów nie leży wewnątrz okręgu opisanego na dowolnym trójkącie \cite{Lee1980}. Podział ten ma tę własność, że maksymalizuje najmniejszy kąt spośród 
 wszystkich trójkątów należących do triangulacji. Na rysunku \ref{fig:triangulacja} przedstawiono przykładową triangulacje.
@@ -42,7 +38,6 @@ wszystkich trójkątów należących do triangulacji. Na rysunku \ref{fig:triang
     \label{fig:triangulacja}
 \end{figure}
 
-\subsubsection{Aplikacje}
 Triangulacja Delaunay'a jest często wykorzystywana przy przetwarzaniu danych LIDAR. Dzięki stosowaniu filtracji może służyć do oddzielania poszczególnych zbiorów punktów od siebie \cite{koziol2007} bądź też do znajdywania łamanej otaczającej zadany zbiór punktów \cite{website:HumanGeoBlog}. Istnieje wiele implementacji algorytmu pozwalającego na przetworzenie chmury punktów do postaci siatki trójkątów \cite{Lee1980,Dwyer1987,jiang2010}. W artykule \cite{Lee1980} opisano dwa algorytmy tworzenia takiej siatki - dziel i zwyciężaj oraz tribuild. Pierwszy z nich o złożoności obliczeniowej $O(N log N)$ rekurencyjnie dzieli zbiór punktów pośrednich na mniejsze zbiory, w nich dokonuje triangulacji a następnie łączy je. Drugi z nich o złożoności obliczeniowej $O(N^{3/2})$ zakłada znajomość prostokąta który otacza zadany zbiór punktów. Prostokąt ten jest dzielony na mniejsze, a następnie dla każdego mniejszego prostokąta:
 \begin{algorithmic}
     \For {punkt P w punktach należących do prostokąta}
@@ -63,11 +58,14 @@ Przykładowe kolejne etapy tak przeprowadzonej triangulacji pokazano na rysunku 
     \label{fig:iter_triangulacja}
 \end{figure}
 
-W 1987 Dwayer zaproponował szybszy algorytm dziel i zwyciężaj, o zakładanej złożoności $O(N log log N)$, jednak w pesymistycznym przypadku dalej będzie to $O(N log N)$  \cite{Dwyer1987}. Powstały też nowsze algorytmy pozwalające na stworzenie triangulacji. W artykule \textsl{An efficient algorithm for constructing Delaunay triangulation} autorzy zwracają uwagę, że w większości algorytmów szybko tworzy się siatkę a następnie dużo czasu poświęca się na lokalne optymalizacje, co skutkuje zwiększoną złożonością obliczeniową. Dzięki zaproponowaniu reguły prawej dłoni, udało im się znacząco zmniejszyć ilość obliczeń potrzebnych do przeprowadzenia lokalnych optymalizacji, tym samym proponowany algorytm ma złożoność na poziomie $O(N)$ \cite{jiang2010}.
+W 1987 Dwayer zaproponował szybszy algorytm dziel i zwyciężaj, o zakładanej złożoności $O(N log log N)$, jednak w pesymistycznym przypadku dalej będzie
+to $O(N log N)$  \cite{Dwyer1987}. Powstały też nowsze algorytmy pozwalające na stworzenie triangulacji.
+W \cite{jiang2010} autorzy zwracają uwagę, że w większości algorytmów szybko tworzy się siatkę a następnie dużo czasu poświęca się na lokalne optymalizacje,
+co skutkuje zwiększoną złożonością obliczeniową. Dzięki zaproponowaniu reguły prawej dłoni, udało im się znacząco zmniejszyć
+ilość obliczeń potrzebnych do przeprowadzenia lokalnych optymalizacji, tym samym proponowany algorytm ma złożoność na poziomie $O(N)$.
 
-\subsection{Maszyny wektorów nośnych}
+\section{Maszyny wektorów nośnych}
 
-\subsubsection{Definicja} 
 Maszyny wektorów nośnych SVN (z ang. \textit{support vector machine}) pozwalają na rozwiązanie tzw. problemu klasyfikacji. Definicja problemu brzmi następująco: dla pewnej przestrzeni $\Omega$ zawierającej wektory danych x, należące do dwóch klas
 $\Omega = \{(x_{i}, c_{i}) | x_{i} \in R^p, c_{i} \in \{-1,1\}\}$
 należy znaleźć klasyfikator który podzieli tę przestrzeń na dwa rozłączne obszary jak najlepiej odpowiadające klasom $\{-1, 1\}$ \cite{stefanowski2010}. Do rozdzielenia zbioru na dwa służy tzw. liniowa funkcja separująca (lub jej uogólnienie - hiperpłaszczyzna dla przypadków n-wymiarowych), która wyznacza podział przestrzeni na dwa podobszary.
@@ -92,7 +90,7 @@ siebie, powstałych poprzez przesuwanie jednej hiperpłaszczyzny od punktu grani
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.33\textwidth]{img/granica_rownolegla.jpg}
-    \caption{Równoległe hiperpłaszczyzny}
+    \caption{Równoległe hiperpłaszczyzny dla przypadku dwuwymiarowego}
     \label{fig:rownolegla_separacja}
 \end{figure}
 
@@ -117,22 +115,19 @@ Parametry $w$ i $b$ należy wyznaczać tak, aby maksymalne marginesy $b_{i1}$ i 
     b_{i2} \quad w*x + b =-1
 \end{eqnarray}
 
-\subsubsection{Aplikacje}
-
 Możliowości wykorzystania maszyn wektorów nośnych do przetwarzania chmury punktów nasuwają się same - możliwe jest chociażby przydzielanie punktów do klas drzew i budynków \cite{xwang2011}. Istnieje wiele 
 różnych przykładów na wykorzystanie SVN do przetwarzania chmur punktów \cite{xwang2011,li2013,david2015}. We wszystkich z nich część punktów pomiarowych jest wykorzystywana jako dane uczące.
 Dla tych punktów operator ręcznie przydziela je do jednej z klas \cite{xwang2011}. Następnie na podstawie tych punktów możliwe jest określenie najlepszej hiperpłaszczyzny, jak opisano w sekcji \textit{definicja}.
-W pracy z 2011r. wykorzystano tzw. niezbalansowane maszyny wektorów nośnych USVN (z ang. \textit{unbalanced support vector machines}) do rozróżnienia drzew i budynków \cite{xwang2011}.
-Do analiz wykorzystano zdjęcia satelitarne oraz dane pochodzące z LIDARa - za pomocą tych dwóch źródeł stworzono wektory $x$ składające się z wysokości $Z$, wariancji wysokości $sZ$, różnice wysokości $hZ$,
+W \cite{xwang2011} wykorzystano tzw. niezbalansowane maszyny wektorów nośnych USVN (z ang. \textit{unbalanced support vector machines}) do rozróżnienia drzew i budynków.
+Do analiz autorzy wykorzystali zdjęcia satelitarne oraz dane pochodzące z LIDARa - za pomocą tych dwóch źródeł stworzono wektory $x$
+składające się z wysokości $Z$, wariancji wysokości $sZ$, różnice wysokości $hZ$,
 pochodne 3-go rzędu wzdłuż osi X i Y - odpowiedno $dX$ i $dY$ - oraz wartość koloru RGB ze zdjęcia satelitarnego. 
-W pracy \textit{Land classification from LiDAR full-waveforms based on multi-class support vector machines} wykorzystano SVM do przypisywania punktów do więcej niż dwóch klas \cite{li2013}. 
-W innej pracy z 2015 równierz wykorzystano SVM do podziału zbioru na więcej niż dwie klasy \cite{david2015}. Analiza to posłużyła do zmierzenia powierzchni namorzyn na Filipinach. 
+W \cite{li2013} wykorzystano SVM do przypisywania punktów do więcej niż dwóch klas. 
+W \cite{david2015} równierz wykorzystano SVM do podziału zbioru na więcej niż dwie klasy. Analiza to posłużyła do zmierzenia powierzchni namorzyn na Filipinach. 
 W tym przypadku do stworzenia wektorów $x$ wykorzystano numeryczny model powierzchmi DSM, numeryczny model terenu DTM, model wysokościowy CHM, średnią intensywność oraz ilość odbić. Co ciekawe, na podstawie
 ilości odbić można określić gatunek drzewa \cite{Sasaki2012}.
 
-\subsection{Analiza obrazu oparta obiektowo}
-
-\subsubsection{Definicja}
+\section{Analiza OBIA}
 
 Analiza obrazu oparta obiektowo OBIA (z ang. \textit{Object – based image analysis}) jest stosunkowo nową metodą \cite{burnett2003} służącą do przetwarzania obrazów. W przeciwieństwie do tradycyjnych metod przetwarzania, 
 nie analizuje pojedynczych pikseli, lecz całe ich grupy, zwane obiektami. Ma to przypominać sposób, w jaki ludzie rozróżniają obiekty na zdjęciach. Jeżeli zdjęcia dotczą powierzchni ziemi (takie jak zdjęcia 
@@ -150,7 +145,6 @@ struktur, odpowiadających rzeczywistym obiektom takim jak jeziora czy drogi \ci
     \label{fig:poziomy_struktury}
 \end{figure}
 
-\subsubsection{Aplikacje}
 Metoda ta jest szeroko używana do analizy danych pochodzących ze skanowania laserowego. Jest wykorzystywana do klasyfikowania terenów miejskich \cite{zhou2013,chen2014},
 wykrywania zmian powierzchni lasu \cite{zhang2014} oraz do wspomagania zarządzania terminalem kontenerowym \cite{tiede2015}. W tym ostatnim wykorzystano technikę OBIA do dokładnego określania miejsca położenia
 kontenerów. Jest to zadanie o tyle łatwiejsze, iż wielkość kontenerów jest znana i podana jako norma ISO 668. Do celów analizy stworzono model DTM na podstawie danych LIDAR. Następnie do wykrywania
@@ -188,13 +182,12 @@ obiektów do różnych klas na podstawie opisanych powyżej czterech atrybutów,
     \end{tabular}
 \end{table}
 
-\subsection{Analiza Głównych Składowych}
+\section{Analiza Głównych Składowych}
 
-\subsubsection{Definicja}
-Analiza głównych składowych PCA (z ang. \textit{Principal components analysis}) to metoda statystyczna służąca do analiz wielowymiarowych, polegająca na tworzeniu nowych zmiennych nazywanych głównymi składowymi.
-Są one tworzone w taki sposób, aby kilka pierwszych z nich tłumaczyło w dużym stopniu zmienność modelu (miały jak największą wariancję). Algebraicznie, główne składowe są szczególnymi kombinacjami liniowymi $p$
-zmiennych losowych $X_{1}, X_{2}, \cdots, X_{p}$. Geometrycznie jest to ortogonalna zamiana oryginalnego układu współrzędnych na nowy. Osie nowego układu reprezentują kierunki z maksymalną wariancją oraz
-oferują prostszy opis zmiennych \cite{johnson2002}.
+Analiza głównych składowych (z ang. \textit{Principal component analysis PCA}) to metoda statystyczna służąca do analiz wielowymiarowych, polegająca na tworzeniu nowych zmiennych nazywanych głównymi składowymi.
+Są one tworzone w taki sposób, aby kilka pierwszych z nich opisywało w dużym stopniu zmienność modelu (miały jak największą wariancję). Algebraicznie, główne składowe są szczególnymi kombinacjami liniowymi $p$
+zmiennych losowych $X_{1}, X_{2}, \cdots, X_{p}$. Geometrycznie jest to ortogonalna transformacja układu współrzędnych. Po tranformacji osie układu reprezentują kierunki
+z maksymalną wariancją\cite{johnson2002}.
 
 Niech dla wektora zmiennych losowych $X'=[X_{1}, X_{2}, \cdots, X_{p}]$, posiadającego macierz kowariancji $\Sigma$ z wartościami własnymi $\lambda_{1} \geqslant \lambda_{2} \geqslant ... \geqslant \lambda_{p}
 \geqslant 0$. Rozważmy wtedy kombinacje liniowe:
@@ -217,7 +210,6 @@ Wtedy można wykazać że:
 gdzie $Var$ i $Cov$ to odpowiednio wariancja i kowariancja. Główne składowe to te \textit{nieskorelowane} kombinacje liniowe $Y_{1}, Y_{2}, \cdots, Y_{p}$ których variancje w \ref{eq:wariancja} są
 największe.
 
-\subsubsection{Aplikacje}
 W przypadku analizy chmury punktów PCA wykorzystywana jest do wyznaczania własciwości lokalnej geometrii \cite{natale2010} czy do określania gatunków drzew \cite{lee2016}.
 W tym pierwszym przypadku analizowano dane LIDAR pochodzące ze skanowania naziemnego w celu usunięcia szumów oraz wykrycia powierzchni brył (takich jak domy).
 PCA było tylko częścią analizy, pomagającą określić czy zadany punkt jest pojedynczym punktem (traktowanym jako błąd, ergo przeznaczonym do usunięcia), fragmentem lini (tym samym najprawdopodobniej krawędzi)
@@ -225,9 +217,8 @@ czy też fragmentem powierzchni.
 W drugiej z cytowanych prac autorzy postawili sobie za cel określenie jakiego gatunku są pojedyncze zdjęcia na podstawie zdjęć lotniczych i danych LIDAR.
 Ze względu na mnogość danych, zdecydowali się na wykorzystanie PCA aby zmniejszyć ilość zmiennych a tym samym - przyspieszyć obliczenia.
 
-\subsection{Ukryte Modele Markowa}
+\section{Ukryte Modele Markowa}
 
-\subsubsection{Definicja}
 Ukryte modele markowa HMM (z ang. \textit{Hidden Markov Model}, czasem nazywane też łańcuchami Markowa) to metoda statystyczna służąca do modelowania procesów.
 Na rysunku \ref{fig:lancuch_markova} przedstawiono przykładowy model.
 Składa się on ze stanów (X, Y, Z), prawdopodobieństwa przejść między nimi oraz emisji które są stowarzyszone z każdym ze stanów.
@@ -284,8 +275,6 @@ Drugim założeniem jest niezależność, tzn. iż obserwacja z czasu $t$ jest z
     P(o_{t}|o_{1}^{t-1},q_{1}^{t}) = P(o_{t}|q_{t})
 \end{equation}
 
-\subsubsection{Aplikacje}
 Ukryte modele markowa są najczęsciej wykorzystywane w zagadnieniach związanych z rozumieniem i syntezą mowy \cite{blunsom2004}, jednakże istnieją przykłady na wykorzystanie tej metody do przetwarzania
 chmur punktów \cite{wang2014}. W pracy \cite{wang2014} wykorzystano HMM do stworzenia autonomicznego pojazdu. Metoda ta posłużyła do wykrywania typów powierzchni.
 
-\section{Klasyfikacja danych}

@@ -19,11 +19,11 @@ W celu szybkiego otrzymania wyników zdecydowano się na stworzenie prostego (na
 
 \noindent Algorytm ten składa się z następujących faz:
 \begin{enumerate}
-    \item Wczytywanie danych
-    \item Wstępne sortowanie
-    \item Przypisywanie do zbiorów
-    \item Filtracja zbiorów
-    \item Znalezienie otoczki wklęsłej dla każdego ze zbiorów
+    \item Wczytywanie danych;
+    \item Wstępne sortowanie;
+    \item Przypisywanie do zbiorów;
+    \item Filtracja zbiorów;
+    \item Znalezienie otoczki wklęsłej dla każdego ze zbiorów.
 \end{enumerate}
 
 \subsection{Wczytywanie danych}
@@ -61,8 +61,8 @@ jego najbliższego otoczenia.
 Sortowanie polega na umieszczeniu punktów w macierzy $[M x N]$, której wymiary odpowiadają różnicy między największa i najmniejszą wartością
 współrzędnych $x, y$ punktu $p$ ze zbioru punktów wejściowych $P$:
 \begin{eqnarray}
-    M = max(p.x) - min(p.x) \bigvee p \in P \\
-    N = max(p.y) - min(p.y) \bigvee p \in P
+    M = max(p.x) - min(p.x) \quad \text{dla} \quad p \in P \\
+    N = max(p.y) - min(p.y) \quad \text{dla} \quad p \in P
 \end{eqnarray}
 
 \noindent Punkty umieszczane są w odpowiadjącym ich współrzędnym komórkach macierzy (algorytm \ref{lis:sortowanie_punktow}).
@@ -119,7 +119,7 @@ jeśli nie należy do żadnego.
 Następnie punkt ten jest porównywany ze wszystkimi pobliskimi\footnote{pobliskie punkty to takie,
 które znajdują się w tej samej lub sąsiedniej komórce macierzy. Patrz \autoref{chap:wstepne_sortowanie}}
 punktami. Najpierw sprawdzana jest, czy dwa punkty są sąsiadami tzn. czy leżą na tej samej powierzchni. 
-Określa się to poprzez obliczenie odległości $d$ między nimi. Odległość ta jest określana przez metrykę euklidesową:
+Określa się to poprzez obliczenie odległości $d$ między nimi. Odległość ta jest określana za pomocą  metryki euklidesowej:
 \begin{equation} \label{eq:odleglosc_euklidesowa_ogolna}
     d(A,B) = \sqrt{\sum\limits_{i=1}^n((x_{iA}-x_{iB})^2)}
 \end{equation}
@@ -250,9 +250,9 @@ def alpha_shape(points, alpha):
 Pierwszym etapem tworzenia otoczki wypukłej jest zrzutowanie danych na powierzchnię dwuwymiarową (linie 14-15).
 Następnie zostaje utworzona triangulaja Delaunay. Potem następuje przejście po wszystkich trójkątach nowo
 utworzonej siatki i dla każdego z nich policzenie promienia okręgu opisanego na tym trójkącie (linie 22-34). Dzięki
-parametrowi \textit{alpha} możliwe jest odrzucenie części trójkątów (tych, dla których promień okręgu opisanego jest większy niż $1/alhpa$).
+parametrowi \textit{alpha} możliwe jest odrzucenie części trójkątów (tych, dla których promień okręgu opisanego jest większy niż $1/alpha$).
 Powoduje to, że otoczka z wypukłej staje się wklęsłą - bardziej odpowiada kształtowi rzeczywistych obiektów.
-Ostatnim etapem jest utworzenie obiektu typu \textit{shapely.geometry.polygon.Polygon}. Obiekt ten posiada w sobie informację
+Ostatnim etapem jest utworzenie obiektu typu \textit{Polygon}. Obiekt ten posiada w sobie informację
 o punktach granicznych, tworzących otoczenie. Przykładowe efekty działania funkcji \textit{alpha\_shape} dla różnych wartości 
 parametru \textit{alpha} przedstawiono na rysunku \ref{fig:triangulacja_alpha}.
 
@@ -276,27 +276,27 @@ parametru \textit{alpha} przedstawiono na rysunku \ref{fig:triangulacja_alpha}.
 
 \section{Algorytm iteracyjny}
 
-Algorytm naiwny dał nadspodziewanie dobre wyniki (\autoref{chap:wyniki}), jednakże posiada jedną wadę:
+Algorytm naiwny dał nadspodziewanie dobre wyniki (rozdział 5), jednakże posiada jedną wadę:
 ciężko poprawić jakość wyników. W związku z tym pojawiła się idea, aby stworzyć nowy algorytm, częściowo
 opierając się na poprzednim. W stosunku do algorytmu naiwnego poczyniono następujące zmiany:
 \begin{itemize}
-    \item Algorytm ma w sposób iteracyjny poprawiać dokładność wyników
-    \item Algorytm ma brać pod uwagę też inne czynniki niż odległość punktów od siebie
+    \item Algorytm ma w sposób iteracyjny poprawiać dokładność wyników;
+    \item Algorytm ma brać pod uwagę też inne czynniki niż odległość punktów od siebie.
 \end{itemize}
 
-\noindent Kolejne kroki algorytmu pozostały takie same, dla przypomnienia:
+\noindent Kolejne kroki algorytmu pozostały takie same. Dla przypomnienia:
 \begin{enumerate}
-    \item Wczytywanie danych
-    \item Wstępne sortowanie
-    \item Przypisywanie do zbiorów
-    \item Filtracja zbiorów
-    \item Znalezienie otoczki wklęsłej dla każdego ze zbiorów
+    \item Wczytywanie danych;
+    \item Wstępne sortowanie;
+    \item Przypisywanie do zbiorów;
+    \item Filtracja zbiorów;
+    \item Znalezienie otoczki wklęsłej dla każdego ze zbiorów.
 \end{enumerate}
 
 Zmieniony został sposób przypisywania do zbiorów. Na początku wyszukiwane są wszystkie zbiory będące w pobliżu badanego punktu.
 Jeżeli nie znaleziono żadnego, tworzy się nowy zbiór zawierający tylko badany punkt.
 Jeśli znaleziono jeden zbiór, przypisywano badany punkt do niego.
-W syutuacji kiedy znaleziono więcej niż jeden zbiór następuje ważenie. Bierze ono pod uwagę odległość punktu od najbliższego
+W syutuacji kiedy znaleziono więcej niż jeden zbiór następuje ważenie. Bierze ono pod uwagę odległość badanego punktu od najbliższego
 punktu należącego do zbioru oraz różnicę między średnią wysokością punktów w zbiorze a wysokością badanego punktu podzieloną
 przez odchylenie standardowe tego zbioru. Algorytm został przedstawiony na rysunku \ref{fig:algorytm_iteracyjny}. W listingu
 \ref{lis:wazenie} przedstawiono jak przebiega faza ważenia.
@@ -352,7 +352,7 @@ dodaje się odległość\footnote{Odległość jest znormalizowana do przedział
 między badanym punktem a najbliższym punktem ze zbioru (linie 16-17).
 Jeżeli maksymlna wartośc punktowa uzyskana w poprzednim etapie wynosi 0, wtedy na potrzeby ostatecznej punktacji
 bierze się pod uwagę tylko odległość. Ostateczny wynik uzyskuje się odejmując 1 od uprzednio uzyskanego wyniku (linia 20).
-Na końcu przypisuje się punkt do zbioru, który uzyskał największą ilość punktów.
+Na końcu przypisuje się punkt do zbioru, który uzyskał największą liczbę punktów.
 
 \section{Przekształcanie do formatu shapefile}
 
@@ -360,7 +360,7 @@ Po podziale surowych danych na zbiory (będące w istocie wielokątami), koniecz
 przekształcenie ich do formatu shapefile. Dzięki temu możliwe będzie wyśwetlanie wyników
 za pomocą aplikacji implementujących standardy OGC, jak np: GeoServer.
 
-Do kowersji danych wykorzystano pakiet \textit{osgeo}. Jest to pakiet który umożliwia
+Do kowersji danych wykorzystano pakiet \textit{osgeo}. Jest to pakiet, który umożliwia
 wykorzystywanie tzw. bilbioteki GDAL (Geospatial Data Abstraction Library). Pozwala ona
 na tworzenie i manipulowanie obiektami geograficznymi, takimi jak punkty, linie i wielokąty.
 Dodatkowo posiada wsparcie dla wielu różnych projekcji geograficznych. Wykorzystanie tej
@@ -396,7 +396,7 @@ shapeData.Destroy()
 \end{lstlisting}
 
 Na początku tworzona jest georeferencja w formacie EPSG 2180 (linie 4-5). Jest to georeferencja w której zostały
-zebrane wejściowe dane lidar. Następnie tworzony jest sterownik, w tym wypadku do tworzenia plików .SHP, oraz otwierany
+zebrane wejściowe dane LiDAR. Następnie tworzony jest sterownik, w tym wypadku do tworzenia plików .SHP, oraz otwierany
 jest deskryptor na plik wynikowy (linie 7-8). Potem tworzona jest nowa warstwa, umieszczana we wcześniej zadeklarowanej
 georeferencji. Dodatkowo deklarowane jest, iż warstwa ta zawierać będzie wielokąty (linia 10). W pętli for przechodzimy po kolei
 przez wszystkie punkty tworzące wszystkie wielokąty i dodajemy je do stworzonej warstwy (linie 12-23). Na końcu niszczony jest

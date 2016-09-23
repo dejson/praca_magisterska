@@ -39,7 +39,7 @@ których współrzędne $x,y \in <0,1>$, zaś wartość wspólrzędnej $z$ dana 
 \end{displaymath}
 
 
-Gdzie $r$ jest zmienna losową z przedziału $<0;0,1>$. Tak utworzone dane powinny zostać zintepretowane jako
+Gdzie $r$ jest wartością losową z przedziału $<0;0,1>$. Tak utworzone dane powinny zostać zintepretowane jako
 dwie niezależne płaszczyzny. Widok przykładowych danych w 3 wymiarach pokazano na rysunku \ref{fig:dane_zerowe}.
 
 \begin{figure}[h!]
@@ -129,6 +129,7 @@ analizowaniu danych rzeczywistych.
 Po sprawdzeniu poprawności działania obu algorytmów przystopiono do testów na prawdziwych danych.
 Dane te zostały zebrane dnia 28 sierpnia 2012 roku w ramach programu ISOK. Obejmują swoim zasięgiem okolice
 gmachu Elektroniki gmachu Oceanotechniki i Okrętownictwa oraz gmachu Mechaniki Politechniki Gdańskiej.
+Plik testowy waży 180MB i zawera w sobie 5,5 miliona punktów.
 Dokładny zasięg danych został przedstawiony na rysunku \ref{fig:dane_testowe}.
 
 \begin{figure}[h!]
@@ -157,7 +158,7 @@ dla przygotowanych algorytmów. Najpierw sprawdzono efekt działania algorytmu n
 \end{figure}
 
 Na rysunku \ref{fig:wynik_naiwny} przedstawiono efekty działania algorytmu naiwnego.
-Na pierwszy rzut oka wydają się być poprawne. Widać wyraźnie zarysowany kształt budynku
+Na pierwszy rzut oka wydają się być poprawne. Widać wyraźnie zarysowany kształt gmachu
 nowej elektroniki. Niestety istnieje też wiele źle zidentyfikowanych fragmentów. Przede
 wszystkim są to drzewa, a także nie wyjaśnione zakłócenia widoczne u góry rysunku.
 
@@ -255,7 +256,7 @@ stwierdzono, że algorytm ten nie nadaje się do analizy tak dużych plików.
 
 Ostatnim testem było połączenie obu rozwiązań, tzn. najpierw wyszukaniem zbiorów
 przy wykorzystaniu algorytmu naiwnego a następnie stopniowym ulepszaniem jego wyniku
-poprzez iteracje. Niestety takie podejście okazało się być zbyt czasochłonne 1 iteracja
+poprzez iteracje. Niestety takie podejście okazało się być zbyt czasochłonne - 1 iteracja
 trwała ponad godzinę, a nie zauważono znacznej poprawy w wynikach. W związku z powyższym
 za najlepszy wynik uznano ten uzyskany przez algorytm naiwny.
 
@@ -267,7 +268,7 @@ nieregularną powierzchnią. Jego wykorzystywanie będzie oznaczać kompresję s
 
 Algorytm iteracyjny nie dał żadnych prawidłowych wyników. Co prawda dla danych sztucznie wygenerowanych
 był w stanie prawidłow sklasyfikować dane do dwóch różnych powierzchni, lecz przy próbie wykorzystania
-danych prawdziwych po kliku iteracjach wynik jest daleki od tego, co oferuje algorytm naiwny. Mozna
+go do analizy danych pochądzących ze skanowania laserowe, wynik po kliku iteracjach jest daleki od tego, co oferuje algorytm naiwny. Mozna
 domniemywać, że za ten stan rzeczy odpowiedzialna jest niedostateczna ilość iteracji. Niestety, wraz
 z każdą iteracją rośnie też średni czas jej obliczania. Sprawia to, że algorytm ten w zaproponowanej formie
 jest bezużyteczny do analizy danych LiDAR.

@@ -1,9 +1,17 @@
 \chapter{Technologie i systemy web-GIS}
-W niniejszym rozdziale zostaną przedstawione protokoły wykorzystywane podczas serwowania map, następnie zostaną omówione serwery umożliwiające przesyłanie map (GeoServer oraz MapServer).
+Rosnące zapotrzebowanie na usługi oparte na danych geograficznych spowodowało konieczność stworzenia standrardów i oprogramowania,
+które umożliwią dostarczanie danych do uzytkowników. 
+W niniejszym rozdziale zostaną przedstawione protokoły wykorzystywane podczas serwowania map, następnie zostaną omówione serwery
+umożliwiające przesyłanie map (GeoServer oraz MapServer).
 W ostatniej części zostaną przedstawione biblioteki klienckie mogące łączyć się z serwerami i prezentujące mapy użytkownikowi.
 
 \section{Protokoły serwowania map}
 \label{chap:protokoly}
+
+Protokły serwowania map stanowią ważny element w architekturze rozwiązań web-GIS. Dzięki nim, możliwa jest komunikacja
+klienta z serwerem bez konieczności znania szczegółów implementacyjnych tegoż serwera. Wystarczy tylko znajomość
+protokołu używanego do transimsji danych. Dodatkowo, takie podejście umożliwia połączenie jednego klienta do wielu
+różnych dostawców danych, tak długo, jak implementują ten sam protokół.
 
 W niniejszej sekcji zostaną opisane protokoły serwowania map:
 \begin{itemize}
@@ -17,7 +25,7 @@ Standardy te zostały opracowane przez Open Geospatial Consortium (OGC). Jest to
 \subsection{WMS}
 Web Map Service jest standardem opisującym sposób udostępniania map przez serwer w postaci rastrowej za pomocą protokołu HTTP.
 Zgodnie ze standardem \cite{OpenGIS_WMS2006}, rastry te mają być generowane dynamicznie na podstawie danych geograficznych.
-Mapy najczęściej są zwracane w jednym z popularnych formatów graficznych, takich jak PNG, GIF lub JPG. Rzadziej jako grafika wektorowa w formatach SVG lub WebCGM.
+Mapy najczęściej są zwracane w jednym z popularnych formatów graficznych, takich jak PNG, GIF lub JPG, rzadziej jako grafika wektorowa w formatach SVG lub WebCGM.
 
 Standard definiuje 3 dozwolone operacje: 
 \begin{enumerate}
@@ -25,10 +33,10 @@ Standard definiuje 3 dozwolone operacje:
     \item GetMap - zwraca mapę na podstawie zdefiniowanych parametrów geograficznych;
     \item GetFeatureInfo (opcjonalna) - zwraca informację dotyczące cech obiektów, znajdujących się na mapie.
 \end{enumerate}
-Wszystkie te operacje mogą być wywoływane za pomocą przeglądarki internetowej poprzez URL. Parametry, które należy podać zależą od rodzaju rządania.
-W przypadku prośby o dostarczenie mapy są to np: wielkość obrazka wynikowego, część Ziemi która ma zostać zobrazowana czy odwzorowanie. Pełna lista parametrów
+Wszystkie te operacje mogą być wywoływane za pomocą przeglądarki internetowej. Parametry, które należy podać zależą od rodzaju rządania.
+W przypadku prośby o dostarczenie mapy są to np: wielkość obrazka wynikowego, część Ziemi która ma zostać zobrazowana czy georeferencja. Pełna lista parametrów
 została przedstawiona w tabeli \ref{tab:parametry_zapytania_GetMap}. Ponadto, standard dopuszcza otrzymywanie poszczególnych map z różnych serwerów.
-Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów mapowych których klienci mogą tworzyć własne mapy.
+Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów mapowych których klienci mogą tworzyć własne mapy. \\
 
 \begin{table}[h!]
     \centering
@@ -69,11 +77,11 @@ Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów mapowych któ
     \end{tabular}
     \caption{Parametry zapytania GetMap}
     \label{tab:parametry_zapytania_GetMap}
-\end{table}
+\end{table} 
 
 Przykładowe zapytanie do serwera WMS wygląda następująco: 
 
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=L]
 http://mapy.geoportal.gov.pl/wss/service/img/guest/ORTO/MapServer/WMSServer?
 service=wms&
 version=1.3.0&
@@ -120,7 +128,7 @@ Jak każda gramatyka dla XMLa, definiuje plik schematu (XML schema). Są w nim o
     \item Map presentation styling rules
 \end{itemize}
 
-W ramach typu \textit{geometry}, zdefiniowano 3 rodzaje geometri: punkty, linie łamane oraz wielokaty.
+W ramach typu \textit{geometry}, zdefiniowano 3 rodzaje geometri: punkty, linie łamane oraz wielokąty.
 Ponadto, społeczności skupione wokół tych samych projektów często definiują własne typy geometryczne, takie jak drogi.
 Przykładowy fragment pliku GML:
 
@@ -148,21 +156,21 @@ TWDP/3D_Data_Formats.pdf -->
 </gml:Polygon>
 \end{lstlisting}
 
-Co więcej, GML dopuszcza także korzystanie z profili. Pozwalają one na uproszczenie tworzenia plików GML. Aby z nich skorzystać, należy je zaimportować \cite{OpeGIS_GML2007}.
+Co więcej, GML dopuszcza także korzystanie z profili. Pozwalają one na uproszczenie tworzenia plików. Aby z nich skorzystać, należy je zaimportować \cite{OpeGIS_GML2007}.
 Istnieje także język KML, który jest propozycją uproszczenia GMLa. Jest wykorzystywany w usługach geograficznych firmy Google \cite{kulawiak2014}.
 
 Jak wspomniano wyżej, sposób pobierania i edytowania plików GML opisuje standard WFS. Definiuje on zestaw rządań, na które musi odpowiedzieć serwer.
 Rządania te mogą być przesyłane za pomocą przeglądarki internetowej. Ponadto, standard dopuszcza używanie zapytań (query). Pozwalają one
-na filtrowanie danych dostępnych na serwerze, a następnie na takim podzbiorze danych wykonanie jednego ze zdefiniowanych zapytań \cite{OpenGIS_WFS2010}.
-Lista rządań prezentuje się następująco:
+na filtrowanie danych dostępnych na serwerze, a następnie na takim podzbiorze danych wykonanie jednego ze zdefiniowanych rządań \cite{OpenGIS_WFS2010}.
+Ich lista prezentuje się następująco:
 \begin{itemize}
     \item GetCapabilities - zwraca informacje opisujące serwer (m.in. jego zawartość);
-    \item DescribeFeatureType - zwraca informacje o schematach opisujące niestandarddowe typy (np: drogi) dostępnych na danym serwerze;
-    \item GetPropertyValue - informację o wartości konkretnego pola we wszystkich obiektach uzyskanych za pomocą zapytania;
+    \item DescribeFeatureType - zwraca informacje o schematach opisujące niestandardowe typy (np: drogi) dostępnych na danym serwerze;
+    \item GetPropertyValue - zwraca informację o wartości konkretnego pola we wszystkich obiektach uzyskanych za pomocą zapytania;
     \item GetFeature - zwraca obiekty na podstawie zapytania;
     \item LockFeature - pozwala na zablokowanie dostępu do zbioru obiektów. Działa podobnie do mechanizmu blokowania znanego z relacyjnych
         baz danych.
-    \item GetFeatureWithLock - podobnie jak GetFeature, lecz poza zwróceniem obiektów powienien je również zablokować;
+    \item GetFeatureWithLock - podobnie jak GetFeature, lecz poza zwróceniem obiektów blokuje je;
     \item Transaction - służy do tworzenie, zmieniania, zastępowania i usuwania obiektów z serwera;
     \item CreateStoredQuery - zapisuje nowe zapytanie na serwerze;
     \item DropStoredQuery - usuwa zapytanie z serwera;
@@ -283,7 +291,7 @@ Na rysunku \ref{fig:geoserver_WMS_architecture} przedstawiono jak przebiega ten 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\textwidth]{img/geoserver_wms_architecture.png}
+    \includegraphics[width=0.6\textwidth]{img/geoserver_wms_architecture.png}
     \caption{Schemat odpowiedzi GeoServera na zapytanie GetMap}
     \source{http://presentations.opengeo.org/2012\_FOSSGIS/suiteintro/\_images/wms.png}
     \label{fig:geoserver_WMS_architecture}
@@ -292,18 +300,17 @@ Na rysunku \ref{fig:geoserver_WMS_architecture} przedstawiono jak przebiega ten 
 Obsługa GeoServera możliwa jest z poziomu przeglądarki. Nie ma konieczności edytowania plików konfiguracyjnych
 w celu dodania nowego źródła danych, utworzenia nowej warstwy czy zdefiniowania nowego stylu. Dzięki temu rozwiązaniu
 GeoServer może być łatwo wykorzystywany także przez użytkowników nie zaznajomionych z obsługą typowych aplikacji serwerowych.
-Na rysunku \ref{} przedstawiono interfejs WWW dostarczany przez GeoServer.
 
 MapServer stanowi alternatywę dla GeoServera. Podobnie jak poprzednik, MapServer stanowi implementację różnych standardów,
 w tym WMS, WFS i WCS. Jest napisany w języku C/C++. Rozwijany jest przez wiele firm z całego świata jako projekt open-source.
 Podstawowoym źródłem danych dla MapServera są pliki shapefile, ale możliwe jest też wykorzystanie innych źródeł. 
-Moożliwe jest też wykorzystanie innego serwera WMS czy WFS jako źródła danych \cite{MapServer2011}.
+Możliwe jest też wykorzystanie innego serwera WMS czy WFS jako źródła danych \cite{MapServer2011}.
 Format danych zwracanych jest zależny od wybranego protokołu.
 
 Najprostsza aplikacja oparta o MapServer składa się z następujących komponentów:
 \begin{itemize}
     \item Dane wejściowe - mogące pochodzić z loklanych baz danych, jak i zewnętrznych serwerów;
-    \item Aplikacje MapServer i MapScript - odpowiedzialne za obsługe rządania. Ich konfiguracja zawarta jest w plikach Mapfile
+    \item Aplikacje MapServer i MapScript - odpowiedzialne za obsługę rządania. Ich konfiguracja zawarta jest w plikach Mapfile
     \item Serwer WWW (Apache) - odpowiada za komunikację poprzez protokół HTTP z klientem
 \end{itemize}
 
@@ -344,18 +351,10 @@ MAP
     SHAPEPATH "../data"
     IMAGECOLOR 255 255 255
     FONTSET "../etc/fonts.txt"
-
-    #
-    # Start of web interface definition
-    #
     WEB
         IMAGEPATH "/ms4w/tmp/ms_tmp/"
         IMAGEURL "/ms_tmp/"
     END # WEB
-
-    #
-    # Start of layer definitions
-    #
     LAYER
         NAME 'global-raster'
         TYPE RASTER
@@ -367,7 +366,7 @@ END # MAP
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\textwidth]{img/mapserver_config.jpg}
+    \includegraphics[width=0.6\textwidth]{img/mapserver_config.jpg}
     \caption{Przykładowa odpowiedź od MapServera}
     \source{http://mapserver.org/\_images/bluemarble-rendered.jpg}
     \label{fig:mapserver_config}
@@ -395,7 +394,7 @@ Aplikacja wykorzystująca OpenLayers może korzystać ze źródeł w wielu forma
 
 Aplikacje korzystające z OpenLayers wykorzystują pewne standardowe komponenty dostarczane przez bibliotekę. Podstawowym jest mapa (\textit{ol.map}).
 Jest ona rysowana w obiekcie celu (\textit{target}). Parametry obiektu mapy mogą być określane przy jej inicjalizacji lub po jej utworzeniu.
-Obiekt mapy nie jest odpowiedzialny za oddalanie, przybliżanie czy przesuwanie mapy. Do tego celu służy obiekt widoku(\textit{ol.View}).
+Obiekt mapy nie jest odpowiedzialny za oddalanie, przybliżanie czy przesuwanie mapy. Do tego celu służy obiekt widoku (\textit{ol.View}).
 Dodatkwo należy zdefiniować źródło danych (\textit{ol.source.Source}).
 Aby wyświetlić dane ze źródła, potrzebny jest obiekt warstwy (\textit{ol.layer}). Istnieją 3 rodzaje warstw \cite{website:OpenLayersDocumentation}:
 \begin{itemize}
@@ -446,7 +445,7 @@ przy użyciu rozszerzeń. Biblioteka definiuje cztery główne rodzaje obiektów
 
 Ponadto konieczne jest wykorzystanie obiektu mapy (\textit{Map}), który jest obiektem nadrzędnym dla pozostałych.
 Na podstawie tych komponentów można stworzyć przykładową aplikację:
-\begin{lstlisting}[frame=L, language=JavaScript, caption={bla bla}]
+\begin{lstlisting}[frame=L, language=JavaScript, caption={Przykładowa aplikacja w Leaflet.js}]
 //Źródło: http://leafletjs.com/examples/quick-start.html
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
@@ -471,7 +470,7 @@ Wynik działania tej aplikacji przedstawiono na rysunku \ref{fig:leaflet_example
     \label{fig:leaflet_example}
 \end{figure}
 
-Przedstawione powyżej biblioteki pełnią taką samą rolę w aplikacji webGis, jednakże różnią się co do oferowanych funkcji.
+Przedstawione powyżej biblioteki pełnią taką samą rolę w aplikacji web-GIS, jednakże różnią się co do oferowanych funkcji.
 Tabela \ref{tab:porownanie_openlayers} pokazuje różnicę pomiędzy tymi dwiema technlogiami \cite{website:OpenLayersVSLeaflet}.
 
 \begin{table}[h!]
