@@ -1,19 +1,15 @@
 \chapter{Opis wybranych algorytmów do przetwarzania chmur punktów w systemach GIS}
 
 \section{Pozyskiwanie danych}
-Do pozyskiwania danych wykorzystuje się technologię LIDAR. Jest to nowoczesna metoda pozyskiwania informacji dotyczących wysokości terenu \cite{Marmol2003}. Efektem jej działania jest tzw “chmura punktów”, która uwzględnia wysokość nie tylko powierzchni ziemi, ale również drzew, budynków itp.
+Do pozyskiwania danych wykorzystuje się technologię LIDAR. Jest to nowoczesna metoda pozyskiwania informacji dotyczących wysokości terenu \cite{Marmol2003}.
+Efektem jej działania jest tzw “chmura punktów”, która uwzględnia wysokość nie tylko powierzchni ziemi, ale również drzew, budynków itp.
 
-Dane zbierane są za pomocą aparatury umieszczonej w samolotach, na którą składają się odbiornik GPS służący do określania pozycji, czujnik INS pozwalający na określenie aktualnego przechyłu pojazdu oraz laser
-LRF mierzący odległość \cite{WBPW2012}. Laser emituje wiązkę w kierunku ziemi. Na podstawie czasu jaki minął między emisją wiązki a jej odczytem, określana jest odległość między aparaturą a badanym punktem.
-Jednocześnie zapisywane jest położenie skanera, co pozwala umieścić punkt w układzie odniesienia (np: WGS 84). Poza odległością (która przekłada się na wysokość punktu nad powierzchnią) zbierane są też inne
-informacje takie jak \cite{chen2014}:
-\begin{itemize}
-\item Intensywność (zwana również amplitudą) - Intensywność wskazuje na charakterystykę odbicia od powierzchni, tym samym mogąc posłużyć do analizy typu powierzchni \cite{yunfei2008};
-\item Różnica w wysokości pierwszego i ostatniego odbicia - Wiązka laserowa może w pewnym stopniu penetrować napotkane powierzchnie. W sytuacji, w której część wiązki spenetruje napotkaną powierzchnię,
-    wysokość powiązana z pierwszym odbiciem będzie inna, niż wysokość powiązana z ostatnim odbiciem. Z drugiej strony, dla nawierzchni twardych, jak dachy czy ulice, wartości te dla wszystkich odbić będą 
-    takie same \cite{chen2014};
-\item Różnica w intensywności pierwszego i ostatniego odbicia - Może być wykorzystana analogicznie do różnicy w wysokości \cite{chen2014}.
-\end{itemize}
+Dane zbierane są za pomocą aparatury umieszczonej w samolotach (helikopterach), na którą składają się odbiornik GPS służący do określania
+pozycji, czujnik INS pozwalający na określenie aktualnego przechyłu pojazdu oraz laser
+LRF mierzący odległość \cite{WBPW2012}. Wykorzystuje on zakres podczerwieni (najczęściej fale o długości 1064nm) lub rzadziej fale z zakresu
+światła widzialnego. Laser ten działa impulsowo, z częstotliwoścami rzędu kilkudziesięciu lub nawet kilkuset kHz, co w praktyce oznacza
+próbkowanie nawet kilkuset tysięcy punktów na sekunde. Typowo promień lasera skierowany jest poprzecznie do kierunku lotu. W wyniku ruchu samolotu
+uzyskuje się podczas jednego przelotu dane z pewnego, stosunkowo wąskiego, paska terenu, co schematycznie przedstawiono na rysunku \ref{fig:lidar}.
 
 \begin{figure}[h!]
 \centering
@@ -23,7 +19,60 @@ informacje takie jak \cite{chen2014}:
     \source{http://antyweb.pl/wp-content/uploads/2015/03/LiDAR-Escaneo-Ejemplo.jpg}
 \end{figure}
 
-Na rysunku \ref{fig:lidar} przedstawiono w sposób schematyczny jak przebiega pobieranie danych. Samolot podczas nalotu pobiera dane wzdłuż pewnego odcinka prostopadłego do kierunku lotu, z których następnie powstaje chmura punktów, której wizualizację również przedstawiono na rysunku.
+Część wiązki odbija się od powierzchni i wraca do odbiornika. Na podstawie czasu odbicia określana jest odległość. Jako że odległości między
+lecącym samolotem a powierzcnią ziemi są dosyć znaczne, konieczne jest wykorzystanie skanera o większej mocy, niż w typowych dalmierzach laserowych.
+Z każdym odczytem powiązane są informacje z systemów GPS oraz INS. Pozwalają one na mierzenie (z wysoką częstotliwością) położenia oraz wychylenia samolotu.
+W rezultacie umożliwia to perfekcyjne umieszczenie mierzonego punktu w przestrzeni.
+
+Możliwe jest także rejestrowanie kilku odbić (tzw. ech) dla pojedynczego impulsu laserowego. W sytuacji, gdy impuls trafi na obszar zadrzewiony dojdzie do częściowego odbicia
+od korony drzewa, zaś reszta energi przejdzie przez koronę i dobije się od gruntu. Ponadto, pomiędzy tymi skrajnymi odbiciami mogą wystąpić odbicia pośrednie.
+Istnieją różne systemy rejestrujące odbitą falę, w tym:
+\begin{itemize}
+    \item Rejestrujące tylko pierwsze lub ostatnie odbicie,
+    \item Rejestrujące pierwsze i ostatnie odbicie,
+    \item Rejestrujące do pięciu odbić,
+    \item Rejestrujące pełny kształ fali powracającej.
+\end{itemize}
+
+Ilość rejestrowanych odbić ma kluczowe znaczenie dla stosowania systemu. Za pomocą rejestrowania dwóch bądź więcej odbić możliwe jest określenie np:
+wysokości drzew. Należy zaznaczyć, iż dla impulsów, które natrafią na powierzchnię gruntu, dachy budynków itp. zarejestrowane zostanie tylko jedno
+odbicie.
+
+Wielokrotność odbić wynika z faktu, iż promień laserowy ma w istoście pewną rozbierzność w wyniku której ślad lasera w terenie ma kształ elipsy.
+Jej rozmiar jest zależny od kąta zbieżności promienia, wysokości lotu oraz kąta, pod którym promień trafia na ziemię. Ponadto dodaktowy wpływ ma
+też nachylenie terenu. W związku z powyższym, jeżeli rozbierzna wiązka przechodzi częsciowo przez koronę drzew, następują wielokrotne odbicia części wiązki,
+co pokazano na rysunku \ref{fig:lidar_beam}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/lidar_beam.jpg}
+    \caption{Kształt sygnału laserowego powracającego w zależności od typu powierzchni}
+    \label{fig:lidar_beam}
+    \source{http://www.qualitydigest.com/IQedit/Images/MISC\%20News\%20Pics/October\%2010/riegel-fig1.jpg}
+\end{figure}
+
+Na rysunku \ref{fig:lidar_beam} widać jak przedstawia się sygnał powracający do odbiornika. W przypadku przechodzenia przez koronę drzewa składa się on z kilku
+maksimów, przy odbiciu od powierzchni gruntu - z jednego. Maksima te traktowane są jako punktowe odbicia od powierzchni o określonej odległości od samolotu i są traktowane
+jako osobne echa.
+
+Różne obiekty w różnym stopniu odbijają energię. Dla laserów działających w bliskiej podczerwieni najmniejsze odbicie występuje od powierzchni wody,
+zaś największe od lodu i śniegu. Mała ilość odbitej energii może doprowadzać do powstawania tzw. "martwego pola" w skanowanym obszarze. Ponadto, niektóre
+systemy skanują też intensywność sygnału powrotnego dając w efekcie obraz intensywności. Jest to źródło dodatkowych danych mogących służyć do dalszej analizy.
+
+Martwe pola mogą powstawać także w innych sytuacjach. Jednym z nich jest skanowanie gęstego terenu zalesionego, w którym cała wiązka odbija się od koron drzew
+nie docierając nigdy do powierzchni gruntu. Niweluje się ten efekt poprzez wykonywanie pomiarów w sezonie jesienno-zimowym (brak liści zwiększa prawdopodobieństwo
+na dotarcie sygnału do powierzchni ziemi). Dodaktowo można zmniejszyć kąt, pod którym wiązka lasera pada na ziemię, co również ułatwia jej dotarcie do gruntu,
+jak pokazano na rysunku \ref{fig:lidar_tree}. Martwe pole może też powstać poprzez zasłonięcie pewnej powierzchni przez wysokie budynki. W celu ich wyeliminowania
+staosuje się wiele nalotów nad tym samym terenem, jednakże z różnych kierunków. Dane pochodzące z każdego nalotu są następnie łączone w jedna chmurę punktów.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/lidar_tree.png}
+    \caption{Penetracja impulsów laserowych jest zależna od kąta padania}
+    \label{fig:lidar_tree}
+    \source{http://www.gugik.gov.pl/\_\_data/assets/pdf\_file/0019/23752/PODRECZNIK\_ISOK\_wyd.2.pdf}
+\end{figure}
+
 
 \section{Triangulacja Delaunay'a}
 
