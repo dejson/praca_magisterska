@@ -1,7 +1,7 @@
 \chapter{Opis wybranych algorytmów do przetwarzania chmur punktów w systemach GIS}
 
-\section{Pozyskiwanie danych}
-Do pozyskiwania danych wykorzystuje się technologię LIDAR. Jest to nowoczesna metoda pozyskiwania informacji dotyczących wysokości terenu \cite{Marmol2003}.
+\section{Pozyskiwanie danych LiDAR}
+LiDAR (z ang. \textit{Light Detection and Ranging}) jest nowoczesną metodą pozyskiwania informacji dotyczących wysokości terenu \cite{Marmol2003}.
 Efektem jej działania jest tzw “chmura punktów”, która uwzględnia wysokość nie tylko powierzchni ziemi, ale również drzew, budynków itp.
 
 Dane zbierane są za pomocą aparatury umieszczonej w samolotach (helikopterach), na którą składają się odbiornik GPS służący do określania
@@ -117,7 +117,9 @@ ilość obliczeń potrzebnych do przeprowadzenia lokalnych optymalizacji, tym sa
 
 Maszyny wektorów nośnych SVN (z ang. \textit{support vector machine}) pozwalają na rozwiązanie tzw. problemu klasyfikacji. Definicja problemu brzmi następująco: dla pewnej przestrzeni $\Omega$ zawierającej wektory danych x, należące do dwóch klas
 $\Omega = \{(x_{i}, c_{i}) | x_{i} \in R^p, c_{i} \in \{-1,1\}\}$
-należy znaleźć klasyfikator który podzieli tę przestrzeń na dwa rozłączne obszary jak najlepiej odpowiadające klasom $\{-1, 1\}$ \cite{stefanowski2010}. Do rozdzielenia zbioru na dwa służy tzw. liniowa funkcja separująca (lub jej uogólnienie - hiperpłaszczyzna dla przypadków n-wymiarowych), która wyznacza podział przestrzeni na dwa podobszary.
+(gdzie $p$ oznacza ilośc wymiarów wektora $x$) należy znaleźć klasyfikator który podzieli tę przestrzeń na dwa rozłączne obszary jak najlepiej
+odpowiadające klasom $\{-1, 1\}$ \cite{stefanowski2010}. Do rozdzielenia zbioru na dwa służy tzw. liniowa funkcja separująca
+(lub jej uogólnienie - hiperpłaszczyzna dla przypadków n-wymiarowych), która wyznacza podział przestrzeni na dwa podobszary.
 
 \begin{figure}[h!]
     \begin{subfigure}[b]{0.33\textwidth}
@@ -235,7 +237,7 @@ obiektów do różnych klas na podstawie opisanych powyżej czterech atrybutów,
 
 Analiza głównych składowych (z ang. \textit{Principal component analysis PCA}) to metoda statystyczna służąca do analiz wielowymiarowych, polegająca na tworzeniu nowych zmiennych nazywanych głównymi składowymi.
 Są one tworzone w taki sposób, aby kilka pierwszych z nich opisywało w dużym stopniu zmienność modelu (miały jak największą wariancję). Algebraicznie, główne składowe są szczególnymi kombinacjami liniowymi $p$
-zmiennych losowych $X_{1}, X_{2}, \cdots, X_{p}$. Geometrycznie jest to ortogonalna transformacja układu współrzędnych. Po tranformacji osie układu reprezentują kierunki
+zmiennych losowych $X_{1}, X_{2}, \cdots, X_{p}$. Geometrycznie jest to przesunięcie układu współrzędnych. Po tranformacji osie układu reprezentują kierunki
 z maksymalną wariancją\cite{johnson2002}.
 
 Niech dla wektora zmiennych losowych $X'=[X_{1}, X_{2}, \cdots, X_{p}]$, posiadającego macierz kowariancji $\Sigma$ z wartościami własnymi $\lambda_{1} \geqslant \lambda_{2} \geqslant ... \geqslant \lambda_{p}
