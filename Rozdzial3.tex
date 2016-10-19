@@ -34,7 +34,7 @@ Standard definiuje 3 dozwolone operacje:
     \item GetFeatureInfo (opcjonalna) - zwraca informację dotyczące cech obiektów, znajdujących się na mapie.
 \end{enumerate}
 Wszystkie te operacje mogą być wywoływane za pomocą przeglądarki internetowej. Parametry, które należy podać zależą od rodzaju rządania.
-W przypadku prośby o dostarczenie mapy są to np: wielkość obrazka wynikowego, część Ziemi która ma zostać zobrazowana czy georeferencja. Pełna lista parametrów
+W przypadku prośby o dostarczenie mapy są to np: wielkość obrazka wynikowego, czy georeferencja. Pełna lista parametrów
 została przedstawiona w tabeli \ref{tab:parametry_zapytania_GetMap}. Ponadto, standard dopuszcza otrzymywanie poszczególnych map z różnych serwerów.
 Tym samym, WMS umożliwia stworzenie sieci rozproszonych serwerów mapowych których klienci mogą tworzyć własne mapy. \\
 
@@ -107,7 +107,7 @@ Wynik takiego zapytania przedstawiono na rysunku \ref{fig:pomorze_gdanskie}.
 \subsection{WFS}
 
 Niemalże połowa właścicieli smartfonów wykorzystuje w swoich telefonach aplikacje bazujące na danych geograficznych, jak np: nawigacja \cite{duggan2013}.
-W celu realizacji takich usług, konieczne jest otrzymanie mapy w formacie innym niż rastrowy czy wektorowy, w celu jej dalszego przetworzenia.
+W celu realizacji takich usług, konieczne jest otrzymanie danych w formacie innym niż rastrowy czy wektorowy, aby móc je dalej przetwarzać.
 Ponadto, w dobie urządzeń mobilnych, możliwość wprowadzania poprawek do danych z dowolnego miejsca wydaje się być koniecznością.
 Odpowiedzią na te dwie potrzeby jest standrad Web Feature Service.
 Opisuje on, w jaki sposób przesyłać i edytować dane zapisane w metajęzyku GML za pomocą protokołu HTTP.

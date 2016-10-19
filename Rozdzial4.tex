@@ -1,4 +1,4 @@
-\chapter{Implementacja algorytmu}
+\chapter{Implementacja algorytmu znajdującego powierzchnie}
 \label{chap:implementacja}
 
 Dane pochodzące ze skanowania laserowego wysokiej rozdzielczości zajmują bardzo dużo miejsca, przez co
@@ -9,12 +9,14 @@ Ich celem było takie przetworzenie danych wejsciowych, aby zmiejszyć ich obję
 W niniejszym rozdziale znajdują się opisy tych algorytmów oraz opis przekształcania ich do formatu shapefile w celu udostępnienia
 poprzez GeoServer.
 
-\section{Algorytm Naiwny}
+\section{Podejście naiwne}
 
 W celu szybkiego otrzymania wyników zdecydowano się na stworzenie prostego (naiwnego) algorytmu. Opierał się on na następujących założeniach:
 \begin{itemize}
     \item Dane wejściowe posiadają wysoką rozdzielczość (rzędu kilkudziesieciu punktów na metr)
-    \item Punkty znajdujące się blisko siebie (tzn. odległość $d$ ze wzoru \ref{eq:odleglosc_euklidesowa} mniejsza niż stała $C$), są fragmentem tej samej powierzchni
+    \item Punkty znajdujące się blisko siebie, czyli takie, których odległość (wyliczana ze wzoru \ref{eq:odleglosc_euklidesowa}) jest mniejsza niż
+        stała $C$, są punktami pochodzącymi z odbicia wiązki lasera od tej samej powierzchni (np.: dwa punkty znajdujące się na jednym dachu).
+        Tym samym powinny zostać zaklasyfikowane do tego samego zbioru.
 \end{itemize}
 
 \noindent Algorytm ten składa się z następujących faz:
@@ -112,7 +114,7 @@ def find_neighbour(point, neighbour_points, sets):
                 union_sets(point.point_set, p.point_set, sets)
 \end{lstlisting}
 
-W funkcji przedstawionej na listingu \ref{lis:podzial_naiwny} dokonuje się całe clou algorytmu naiwnego.
+W funkcji przedstawionej na listingu \ref{lis:podzial_naiwny} następuje klasyfikacja punktów.
 W pierwszej części (linie 2-4) aktualnie badany punkt (\textit{point}) tworzy nowy jednoelementowy zbiór,
 jeśli nie należy do żadnego.
 
@@ -354,7 +356,7 @@ Jeżeli maksymlna wartośc punktowa uzyskana w poprzednim etapie wynosi 0, wtedy
 bierze się pod uwagę tylko odległość. Ostateczny wynik uzyskuje się odejmując 1 od uprzednio uzyskanego wyniku (linia 20).
 Na końcu przypisuje się punkt do zbioru, który uzyskał największą liczbę punktów.
 
-\section{Przekształcanie do formatu shapefile}
+\section{Przekształcanie do formatu ESRI Shapefile}
 
 Po podziale surowych danych na zbiory (będące w istocie wielokątami), konieczne jest
 przekształcenie ich do formatu shapefile. Dzięki temu możliwe będzie wyśwetlanie wyników
