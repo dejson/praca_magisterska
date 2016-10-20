@@ -19,14 +19,16 @@ W celu szybkiego otrzymania wyników zdecydowano się na stworzenie prostego (na
         Tym samym powinny zostać zaklasyfikowane do tego samego zbioru.
 \end{itemize}
 
-\noindent Algorytm ten składa się z następujących faz:
-\begin{enumerate}
-    \item Wczytywanie danych;
-    \item Wstępne sortowanie;
-    \item Przypisywanie do zbiorów;
-    \item Filtracja zbiorów;
-    \item Znalezienie otoczki wklęsłej dla każdego ze zbiorów.
-\end{enumerate}
+\noindent Algorytm ten składa się z następujących kroków:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{img/algorytm_ogolny.png}
+    \caption{Kolejne fazy algorytmu}
+    \label{fig:alg_ogolny}
+\end{figure}
+
+\newpage
 
 \subsection{Wczytywanie danych}
 
@@ -100,7 +102,7 @@ są zaliczane do jednego zbioru i tym samym traktowane jako fragmenty tej samej 
 możliwe jest porównywanie tylko punktów leżących blisko siebie w projekcji dwuwymiarowej (z pominięciem składowej $z$).
 Algorytm wygląda następująco:
 
-\begin{lstlisting}[frame=L, language=python, caption={Podział punktów na zbiory w algorytmie naiwnym}, label={lis:podzial_naiwny}]
+\begin{lstlisting}[frame=L, language=python, caption=d10d{Podział punktów na zbiory w algorytmie naiwnym}, label={lis:podzial_naiwny}]
 def find_neighbour(point, neighbour_points, sets):
     if point.point_set is None:
         point.point_set = len(sets)
@@ -143,7 +145,7 @@ rysunku \ref{fig:sprawdzanie_sasiedztwa}
         \caption {punkty należą do tego samego zbioru (d < C)}
     \end{subfigure}
     \quad
-    \begin{subfigure}[b]{0.3\textwidth}
+\begin{subfigure}[b]{0.3\textwidth}
         \includegraphics[width=\linewidth]{img/sasiedztwo_punktow2.png}
         \caption {punkty nie należą do tego samego zbioru (d > C)}
     \end{subfigure}%
@@ -154,7 +156,17 @@ rysunku \ref{fig:sprawdzanie_sasiedztwa}
 
 Po sprawdzeniu sąsiedztwa, jeżeli drugi z punktów nie należy do żadnego zbioru, przypisuje się go do tego samego zbioru, co badany punkt \textit{point}.
 W przeciwnym przypadku (gdy oba punkty należą do różnych zbiorów), zbiory te są łączone przy wykorzystaniu metody \textit{union\_set}.
-Metoda ta przepisuje wszystkie punkty z mniejszego zbioru do większego (dbając przy tym o poprawność indeksów).
+Metoda ta przepisuje wszystkie punkty z mniejszego zbioru do większego (dbając przy tym o poprawność indeksów) Cały algorytm został schematycznie
+przedstawiony na rysunku \ref{fig:algorytm_naiwny}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/algorytm_naiwny.png}
+    \caption{Schemat blokowy podejścia naiwnego}
+    \label{fig:algorytm_naiwny}
+\end{figure}
+
+\newpage
 
 \subsection{Filtracja zbiorów}
 
@@ -276,6 +288,8 @@ parametru \textit{alpha} przedstawiono na rysunku \ref{fig:triangulacja_alpha}.
     \label{fig:triangulacja_alpha}
 \end{figure}
 
+\newpage
+
 \section{Algorytm iteracyjny}
 
 Algorytm naiwny dał nadspodziewanie dobre wyniki (rozdział 5), jednakże posiada jedną wadę:
@@ -367,6 +381,8 @@ wykorzystywanie tzw. bilbioteki GDAL (Geospatial Data Abstraction Library). Pozw
 na tworzenie i manipulowanie obiektami geograficznymi, takimi jak punkty, linie i wielokąty.
 Dodatkowo posiada wsparcie dla wielu różnych projekcji geograficznych. Wykorzystanie tej
 biblioteki do konwersji przedstawiono na listingu \ref{lis:konwersja}.
+
+\newpage
 
 \begin{lstlisting}[frame=L, language=python, caption={Konwersja danych do formatu SHP}, label={lis:konwersja}]
 import osgeo.ogr as ogr

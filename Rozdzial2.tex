@@ -76,8 +76,12 @@ staosuje się wiele nalotów nad tym samym terenem, jednakże z różnych kierun
 
 \section{Triangulacja Delaunay'a}
 
-Triangulacja Delaunay'a jest reprezentacją chmury punktów w postaci nieregularnej siatki trójkątów TIN (z ang. Triangulated Irregular Network).
-Jej cechą szczególną jest fakt, iż żaden z punktów nie leży wewnątrz okręgu opisanego na dowolnym trójkącie \cite{Lee1980}. Podział ten ma tę własność, że maksymalizuje najmniejszy kąt spośród 
+Nieregularna siatka trójkątów TIN (z ang. \textit{Triangulated Irregular Network}) jest szeroko wykorzystywana do tworzenia grafiki 3d.
+Pozwala przejść z dyskretnych punktów na powierzchnię ciągła - trójkąty interpolują wartości w swoim wnętrzu na podstawie wartości w
+wierzchołkach. Znajduje zastosowanie w grach oraz w systemach GIS, przy reprezentacji chmury punktów w postaci trójwymiarowej powierzchni.
+
+Triangulacja Delaunay'a jest szczególnym przypadkiem nieregularnej siatki trójkątów.
+Jej cechą jest, iż żaden z punktów nie leży wewnątrz okręgu opisanego na dowolnym trójkącie \cite{Lee1980}. Podział ten ma tę własność, że maksymalizuje najmniejszy kąt spośród 
 wszystkich trójkątów należących do triangulacji. Na rysunku \ref{fig:triangulacja} przedstawiono przykładową triangulacje.
 
 \begin{figure}[h!]
@@ -87,16 +91,21 @@ wszystkich trójkątów należących do triangulacji. Na rysunku \ref{fig:triang
     \label{fig:triangulacja}
 \end{figure}
 
-Triangulacja Delaunay'a jest często wykorzystywana przy przetwarzaniu danych LIDAR. Dzięki stosowaniu filtracji może służyć do oddzielania poszczególnych zbiorów punktów od siebie \cite{koziol2007} bądź też do znajdywania łamanej otaczającej zadany zbiór punktów \cite{website:HumanGeoBlog}. Istnieje wiele implementacji algorytmu pozwalającego na przetworzenie chmury punktów do postaci siatki trójkątów \cite{Lee1980,Dwyer1987,jiang2010}. W artykule \cite{Lee1980} opisano dwa algorytmy tworzenia takiej siatki - dziel i zwyciężaj oraz tribuild. Pierwszy z nich o złożoności obliczeniowej $O(N log N)$ rekurencyjnie dzieli zbiór punktów pośrednich na mniejsze zbiory, w nich dokonuje triangulacji a następnie łączy je. Drugi z nich o złożoności obliczeniowej $O(N^{3/2})$ zakłada znajomość prostokąta który otacza zadany zbiór punktów. Prostokąt ten jest dzielony na mniejsze, a następnie dla każdego mniejszego prostokąta:
-\begin{algorithmic}
-    \For {punkt P w punktach należących do prostokąta}
-    \If {P jedyny punkt w prostokącie}
-        \State połącz punkt z wierzchołkami prostokąta
-    \Else
-        \State dodaj krawędzie, aby nie zniszczyć triangulacji
-    \EndIf
-    \EndFor
-\end{algorithmic}
+Triangulacja Delaunay'a jest często wykorzystywana przy przetwarzaniu danych LIDAR. Dzięki stosowaniu filtracji może służyć do oddzielania poszczególnych
+zbiorów punktów od siebie \cite{koziol2007} bądź też do znajdywania łamanej otaczającej zadany zbiór punktów \cite{website:HumanGeoBlog}.
+Istnieje wiele implementacji algorytmu pozwalającego na przetworzenie chmury punktów do postaci siatki trójkątów \cite{Lee1980,Dwyer1987,jiang2010}.
+W artykule \cite{Lee1980} opisano dwa algorytmy tworzenia takiej siatki - dziel i zwyciężaj oraz tribuild. Pierwszy z nich o złożoności obliczeniowej
+$O(N log N)$ rekurencyjnie dzieli zbiór punktów pośrednich na mniejsze zbiory, w nich dokonuje triangulacji a następnie łączy je.
+Drugi z nich o złożoności obliczeniowej $O(N^{3/2})$ zakłada znajomość prostokąta który otacza zadany zbiór punktów.
+Prostokąt ten jest dzielony na mniejsze, a następnie dla każdego mniejszego prostokąta:
+
+\begin{lstlisting}[frame=L, language=JavaScript, label={lis:triangulacja}, caption={Tworzenie triangulacji wewnątrz małego zbioru}]
+    for punkt P w punktach należących do prostokąta
+        if P jedyny punkt w prostokącie
+            połącz punkt z wierzchołkami prostokąta
+        else
+            dodaj krawędzie, aby nie zniszczyć triangulacji
+\end{lstlisting}
 
 Przykładowe kolejne etapy tak przeprowadzonej triangulacji pokazano na rysunku \ref{fig:iter_triangulacja}.
 
@@ -107,11 +116,35 @@ Przykładowe kolejne etapy tak przeprowadzonej triangulacji pokazano na rysunku 
     \label{fig:iter_triangulacja}
 \end{figure}
 
-W 1987 Dwayer zaproponował szybszy algorytm dziel i zwyciężaj, o zakładanej złożoności $O(N log log N)$, jednak w pesymistycznym przypadku dalej będzie
-to $O(N log N)$  \cite{Dwyer1987}. Powstały też nowsze algorytmy pozwalające na stworzenie triangulacji.
+W \cite{Dwyer1987} zaproponowano szybszy algorytm dziel i zwyciężaj, o zakładanej złożoności $O(N log log N)$, jednak w pesymistycznym przypadku dalej będzie
+to $O(N log N)$. 
 W \cite{jiang2010} autorzy zwracają uwagę, że w większości algorytmów szybko tworzy się siatkę a następnie dużo czasu poświęca się na lokalne optymalizacje,
-co skutkuje zwiększoną złożonością obliczeniową. Dzięki zaproponowaniu reguły prawej dłoni, udało im się znacząco zmniejszyć
-ilość obliczeń potrzebnych do przeprowadzenia lokalnych optymalizacji, tym samym proponowany algorytm ma złożoność na poziomie $O(N)$.
+co skutkuje zwiększoną złożonością obliczeniową. Stworzyli więc szybszą metodę pozwalającą stwierdzić, czy dany trójkąt spełnia założenia triangulacji
+Delaunay. Polega ona na stwierdzeniu, czy dany punkt $r$ leży po prawej stronie od wszystkich wektorów tworzących trójkąt $\overrightarrow{PQ}, \overrightarrow{QR}, \overrightarrow{RP}$
+(kierunek wektorów jest przeciwny do ruchu wskazówek zegara).
+Jeżeli tak jest dla wszystkich punktów, to dany trójkąt jest trójkątem prawidłowym. Aby móc stwierdzić, czy dany punkt $r$ leży na prawo od wektora $\overrightarrow{PQ}$ zaproponowano metodę
+prawej dłoni. Jej działanie jest proste - jeżeli wysunięty kciuk prawej dłoni wskazuje w kierunku od punktu $P$ do punktu $Q$ a palec wskazujący jest skierowany
+do punktu $r$, to kierunek w którą wskazuje palec wskazujący określa, czy punkt jest z lewej czy prawej strony odcinka. Algebraicznie można to zapisać jako:
+
+\begin{equation}
+M(\overrightarrow {PQ},r)=\left\vert
+    \begin{matrix}
+        p_{x} & p_{y} \\
+        q_{x} & q_{y} \\ 
+        r_{x} & r_{y} 
+    \end{matrix}
+    \right\vert +
+    \left\vert
+    \begin{matrix}
+        p_{x}-r_{x} & p_{y}-r_{y} \\
+        q_{x}-r_{x} & q_{y}-r_{y} 
+    \end{matrix}
+    \right\vert
+\end{equation}
+
+Macierz $M$ jest dodatnio określona, jeżeli punkt $r$ znajduje się z lewej strony, ujemnie, gdy z prawej. Sprawdzanie za pomocą tej metody, czy dany trójkąt spełnia
+założenia triangulacji jest szybsze niż tradycyjne sprwawdzanie, czy punkt $r$ znajduje się wewnątrz okręgu opisanego na trójkącie $PQR$.
+Pozwoliło to na zmniejszenie złożoności do $O(N)$.
 
 \section{Maszyny wektorów nośnych}
 
